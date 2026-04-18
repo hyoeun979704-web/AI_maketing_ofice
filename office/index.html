@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Marketing Office — 자율 에이전트 오피스</title>
+  <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><text y="52" font-size="52">🏢</text></svg>' />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ======================= SIDEBAR ======================= -->
+    <aside class="sidebar">
+      <header class="sidebar__header">
+        <h1>🏢 AI Marketing Office</h1>
+        <div class="status-pill" id="api-status" title="ANTHROPIC_API_KEY 환경변수에 의해 결정">—</div>
+      </header>
+
+      <section class="kpis">
+        <div class="kpi"><span class="kpi__label">직원</span><span class="kpi__value" id="kpi-total">0</span></div>
+        <div class="kpi"><span class="kpi__label">업무중</span><span class="kpi__value" id="kpi-working">0</span></div>
+        <div class="kpi"><span class="kpi__label">대기</span><span class="kpi__value" id="kpi-idle">0</span></div>
+        <div class="kpi kpi--alert"><span class="kpi__label">승인대기</span><span class="kpi__value" id="kpi-awaiting">0</span></div>
+      </section>
+
+      <section class="panel">
+        <h2>🛎 승인 대기 <span class="count" id="approval-count">0</span></h2>
+        <ul class="approval-list" id="approval-list">
+          <li class="empty">대기 중인 승인이 없습니다.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>⚙️ 진행 중 업무 <span class="count" id="task-count">0</span></h2>
+        <ul class="task-list" id="task-list"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>✅ 완료된 업무 <span class="count" id="completed-count">0</span></h2>
+        <ul class="task-list" id="completed-list">
+          <li class="empty">아직 완료된 업무가 없습니다.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>📜 활동 피드</h2>
+        <ul class="activity-list" id="activity-list"></ul>
+      </section>
+
+      <footer class="sidebar__footer">
+        <button class="btn btn--ghost" id="btn-spawn">+ 수동 업무 생성</button>
+      </footer>
+    </aside>
+
+    <!-- ======================= MAIN (ISOMETRIC ROOM) ======================= -->
+    <main class="scene">
+      <div class="scene__camera" id="camera">
+        <div class="room" id="room">
+          <!-- floor tiles and agents injected by characters.js -->
+        </div>
+        <div class="bubbles" id="bubbles"><!-- speech bubbles positioned absolutely --></div>
+      </div>
+
+      <div class="scene__legend" id="legend"></div>
+    </main>
+  </div>
+
+  <!-- ==================== APPROVAL MODAL ==================== -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal__close" data-close aria-label="닫기">✕</button>
+      <div class="modal__head">
+        <div class="modal__avatar" id="modal-avatar">🧑‍💼</div>
+        <div>
+          <span class="chip chip--alert">⚠️ 승인 필요</span>
+          <h2 id="modal-title">—</h2>
+          <p class="modal__sub" id="modal-agent">—</p>
+        </div>
+      </div>
+
+      <section class="modal__block">
+        <h3>이유</h3>
+        <p id="modal-reason">—</p>
+      </section>
+
+      <section class="modal__block">
+        <h3>제안된 행동</h3>
+        <p id="modal-action">—</p>
+      </section>
+
+      <section class="modal__block">
+        <h3>에이전트 작업 결과</h3>
+        <pre id="modal-output">—</pre>
+      </section>
+
+      <div class="modal__buttons">
+        <button class="btn btn--ghost" data-close>취소</button>
+        <button class="btn btn--reject" id="btn-reject">거절</button>
+        <button class="btn btn--primary" id="btn-approve">승인하고 진행</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== AGENT DETAIL MODAL ==================== -->
+  <div class="modal" id="agent-modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card modal__card--wide" role="dialog" aria-modal="true" aria-labelledby="agent-modal-title">
+      <button class="modal__close" data-close aria-label="닫기">✕</button>
+      <div class="modal__head">
+        <div class="modal__avatar" id="agent-modal-avatar">🧑‍💼</div>
+        <div>
+          <h2 id="agent-modal-title">—</h2>
+          <p class="modal__sub" id="agent-modal-sub">—</p>
+          <div class="modal__badges" id="agent-modal-badges"></div>
+        </div>
+      </div>
+
+      <section class="modal__block">
+        <h3>역할 (SKILL.md 요약)</h3>
+        <p id="agent-modal-role">—</p>
+      </section>
+
+      <section class="modal__block">
+        <h3>현재 상태</h3>
+        <p id="agent-modal-status">—</p>
+      </section>
+
+      <section class="modal__block">
+        <h3>최근 업무 <span class="count" id="agent-modal-count">0</span></h3>
+        <ul class="task-history" id="agent-modal-history">
+          <li class="empty">아직 수행한 업무가 없습니다.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <!-- ==================== TASK OUTPUT MODAL ==================== -->
+  <div class="modal" id="task-modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card modal__card--wide" role="dialog" aria-modal="true">
+      <button class="modal__close" data-close aria-label="닫기">✕</button>
+      <div class="modal__head">
+        <div class="modal__avatar" id="task-modal-avatar">🧑‍💼</div>
+        <div>
+          <h2 id="task-modal-title">—</h2>
+          <p class="modal__sub" id="task-modal-sub">—</p>
+          <div class="modal__badges" id="task-modal-badges"></div>
+        </div>
+      </div>
+
+      <section class="modal__block">
+        <h3>📥 에이전트가 받은 지시 (user prompt)</h3>
+        <pre id="task-modal-user-prompt">—</pre>
+      </section>
+
+      <section class="modal__block">
+        <h3>📤 에이전트 작업 결과</h3>
+        <pre id="task-modal-output">—</pre>
+      </section>
+
+      <section class="modal__block">
+        <details>
+          <summary>🧠 시스템 프롬프트 (SKILL.md 전문) — 클릭해 펼치기</summary>
+          <pre id="task-modal-system-prompt">—</pre>
+        </details>
+      </section>
+    </div>
+  </div>
+
+  <script src="./characters.js" type="module"></script>
+  <script src="./engine.js" type="module"></script>
+</body>
+</html>
