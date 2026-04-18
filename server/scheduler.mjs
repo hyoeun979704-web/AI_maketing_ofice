@@ -56,7 +56,16 @@ async function executeTask(taskId) {
   try {
     const result = await runTask(task);
     const { output, systemPrompt, userPrompt, mode } = result;
-    queue.updateTask(taskId, { output, systemPrompt, userPrompt, mode });
+    queue.updateTask(taskId, { output, systemPrompt, userPrompt, mode, fetchedUrl: result.fetchedUrl, missingData: result.missingData, fetchError: result.fetchError });
+
+    // Honest status reporting: modes that mean "I couldn't actually do the
+    // work" must not show as 'completed' (green). Use 'blocked' instead so
+    // the UI can render them differently.
+    if (mode === 'blocked' || mode === 'data-needed' || mode === 'fetch-failed') {
+      queue.updateTask(taskId, { status: 'blocked', finishedAt: Date.now() });
+      queue.setAgentStatus(task.agent, 'idle');
+      return;
+    }
 
     const decision = decideAction(task.agent, task.kind);
     if (!decision.autonomous) {

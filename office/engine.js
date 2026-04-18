@@ -297,7 +297,7 @@ function renderAll() {
 function renderCompleted() {
   const el = document.getElementById('completed-list');
   const done = [...state.tasks.values()]
-    .filter((t) => t.status === 'completed' || t.status === 'rejected' || t.status === 'failed')
+    .filter((t) => t.status === 'completed' || t.status === 'rejected' || t.status === 'failed' || t.status === 'blocked')
     .sort((a, b) => (b.finishedAt || 0) - (a.finishedAt || 0))
     .slice(0, 15);
   document.getElementById('completed-count').textContent = done.length;
@@ -309,7 +309,11 @@ function renderCompleted() {
   for (const t of done) {
     const agent = state.agentsByName.get(t.agent);
     const row = document.createElement('li');
-    row.className = 'task-row' + (t.status === 'failed' ? ' is-failed' : t.status === 'rejected' ? ' is-rejected' : '');
+    row.className = 'task-row'
+      + (t.status === 'failed' ? ' is-failed'
+      : t.status === 'rejected' ? ' is-rejected'
+      : t.status === 'blocked' ? ' is-blocked'
+      : '');
     row.innerHTML = `
       <span class="task-row__emoji">${agent?.emoji || '🧑‍💼'}</span>
       <span class="task-row__title">
@@ -369,7 +373,11 @@ function renderTasks() {
   for (const t of live) {
     const agent = state.agentsByName.get(t.agent);
     const row = document.createElement('li');
-    row.className = 'task-row' + (t.status === 'failed' ? ' is-failed' : t.status === 'rejected' ? ' is-rejected' : '');
+    row.className = 'task-row'
+      + (t.status === 'failed' ? ' is-failed'
+      : t.status === 'rejected' ? ' is-rejected'
+      : t.status === 'blocked' ? ' is-blocked'
+      : '');
     row.innerHTML = `
       <span class="task-row__emoji">${agent?.emoji || '🧑‍💼'}</span>
       <span class="task-row__title">
@@ -479,7 +487,7 @@ function openTaskModal(task) {
 
   // Error banner for failures
   const errBanner = document.getElementById('task-modal-error');
-  if (task.status === 'failed' || task.mode === 'fetch-failed' || task.mode === 'data-needed' || task.mode === 'blocked') {
+  if (task.status === 'failed' || task.status === 'blocked' || task.mode === 'fetch-failed' || task.mode === 'data-needed' || task.mode === 'blocked') {
     let title = '실행이 멈춘 이유';
     let detail = '';
     if (task.mode === 'blocked') { title = '회사 정보 미등록'; detail = '사이드바의 "회사 정보" 버튼에서 회사명·URL·설명을 등록한 뒤 다시 시도하세요.'; }
@@ -535,6 +543,7 @@ function renderStatus(s) {
     completed: '완료',
     rejected: '거절',
     failed: '실패',
+    blocked: '진행 불가',
   }[s] || s;
 }
 

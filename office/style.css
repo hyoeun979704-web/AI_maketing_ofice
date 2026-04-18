@@ -205,16 +205,23 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 .task-row__state.rejected { background: rgba(255,107,107,0.2); color: var(--danger); }
 .task-row__state.queued { background: rgba(188,188,214,0.1); color: var(--ink-soft); }
 .task-row__state.failed { background: rgba(255,107,107,0.2); color: var(--danger); }
+.task-row__state.blocked { background: rgba(255, 204, 58, 0.2); color: var(--warn); }
 
-/* Failed task highlighting in lists */
+/* Failed / rejected / blocked task highlighting in lists */
 .task-row.is-failed,
 .task-row.is-rejected {
   background: rgba(255, 107, 107, 0.06);
   border-left: 3px solid var(--danger);
   padding-left: 5px;
 }
+.task-row.is-blocked {
+  background: rgba(255, 204, 58, 0.06);
+  border-left: 3px solid var(--warn);
+  padding-left: 5px;
+}
 .task-row.is-failed .task-row__title,
 .task-row.is-rejected .task-row__title { color: #ffb4b4; }
+.task-row.is-blocked .task-row__title { color: #ffddaa; }
 
 /* Error banner inside task modal */
 .task-modal__error {
