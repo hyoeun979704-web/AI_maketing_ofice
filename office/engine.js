@@ -567,27 +567,50 @@ function openTaskModal(task) {
   const badges = document.getElementById('task-modal-badges');
   badges.innerHTML = '';
   addBadgeTo(badges, task.kind || 'draft', 'badge');
-  if (task.mode === 'api') addBadgeTo(badges, 'Claude API', 'chip chip--alert');
-  else if (task.mode === 'simulation') addBadgeTo(badges, '시뮬레이션', 'chip');
-  else if (task.mode === 'blocked') addBadgeTo(badges, '회사 미등록', 'chip chip--alert');
-  else if (task.mode === 'data-needed') addBadgeTo(badges, '데이터 연결 필요', 'chip chip--alert');
-  else if (task.mode === 'fetch-failed') addBadgeTo(badges, 'URL 가져오기 실패', 'chip chip--alert');
+  if (task.mode === 'api') addBadgeTo(badges, 'Claude API', 'chip chip--success');
+  else if (task.mode === 'api-with-warnings') addBadgeTo(badges, 'Claude API · 일부 데이터 누락', 'chip chip--warn');
+  else if (task.mode === 'framework-only') addBadgeTo(badges, 'Claude API · 프레임워크 답변', 'chip chip--warn');
+  else if (task.mode === 'simulation') addBadgeTo(badges, '시뮬레이션 (API 키 없음)', 'chip');
+  else if (task.mode === 'fallback-simulation') addBadgeTo(badges, '⚠️ API 실패 → 시뮬 대체', 'chip chip--warn');
+  else if (task.mode === 'blocked') addBadgeTo(badges, '진행 불가', 'chip chip--alert');
   if (task.fetchedUrl) addBadgeTo(badges, '🌐 ' + truncate(task.fetchedUrl, 40), 'badge');
 
-  // Error banner for failures
+  // Warning/error banner. We differentiate hard stops (blocked/failed) from
+  // soft degradations (fallback used, data missing) so the UI doesn't cry
+  // wolf every time the API hiccups.
   const errBanner = document.getElementById('task-modal-error');
-  if (task.status === 'failed' || task.status === 'blocked' || task.mode === 'fetch-failed' || task.mode === 'data-needed' || task.mode === 'blocked') {
-    let title = '실행이 멈춘 이유';
-    let detail = '';
-    if (task.mode === 'blocked') { title = '회사 정보 미등록'; detail = '사이드바의 "회사 정보" 버튼에서 회사명·URL·설명을 등록한 뒤 다시 시도하세요.'; }
-    else if (task.mode === 'data-needed') { title = '외부 데이터 연결 필요'; detail = (task.missingData || []).map((m) => '• ' + m).join('\n'); }
-    else if (task.mode === 'fetch-failed') { title = 'URL 가져오기 실패'; detail = task.fetchError || ''; }
-    else if (task.status === 'failed') { title = '실행 실패'; detail = (task.output || '').replace(/^⚠️ 실행 실패:\s*/, ''); }
+  let bannerTitle = '';
+  let bannerDetail = '';
+  let bannerClass = '';
+  if (task.status === 'blocked') {
+    bannerTitle = '작업을 시작할 수 없습니다';
+    bannerDetail = (task.missingData || []).map((m) => '• ' + m).join('\n');
+    bannerClass = 'hard';
+  } else if (task.status === 'failed') {
+    bannerTitle = '예상치 못한 오류';
+    bannerDetail = (task.output || '').slice(0, 200);
+    bannerClass = 'hard';
+  } else if (task.mode === 'fallback-simulation') {
+    bannerTitle = 'API 호출 실패 → 시뮬 결과로 대체';
+    bannerDetail = task.apiError || '재시도 후에도 연결 실패. 결과는 시뮬레이션 출력이니 참고용으로만 사용.';
+    bannerClass = 'soft';
+  } else if (task.mode === 'api-with-warnings') {
+    bannerTitle = '일부 데이터 누락';
+    bannerDetail = task.fetchError || '사이트 데이터 없이 프레임워크 수준으로 응답.';
+    bannerClass = 'soft';
+  } else if (task.mode === 'framework-only') {
+    bannerTitle = '외부 데이터 연결 필요';
+    bannerDetail = (task.missingData || []).map((m) => '• ' + m).join('\n') + '\n\n이 데이터가 연결되면 구체 수치·실험 결과를 제공합니다.';
+    bannerClass = 'soft';
+  }
+  if (bannerTitle) {
     errBanner.hidden = false;
-    errBanner.innerHTML = `<strong>${escape(title)}</strong>${escape(detail || '')}`;
+    errBanner.className = 'task-modal__error task-modal__error--' + bannerClass;
+    errBanner.innerHTML = `<strong>${escape(bannerTitle)}</strong>${escape(bannerDetail || '')}`;
   } else {
     errBanner.hidden = true;
     errBanner.innerHTML = '';
+    errBanner.className = 'task-modal__error';
   }
 
   document.getElementById('task-modal-user-prompt').textContent = task.userPrompt || '(요청 정보 없음)';

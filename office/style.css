@@ -292,17 +292,26 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 .task-row.is-rejected .task-row__title { color: #ffb4b4; }
 .task-row.is-blocked .task-row__title { color: #ffddaa; }
 
-/* Error banner inside task modal */
+/* Banner inside task modal. Hard = red (blocked/failed), soft = amber
+   (degraded but we still produced useful output). */
 .task-modal__error {
-  background: #fff0f0;
-  border: 2px solid var(--danger);
   border-radius: 8px;
   padding: 10px 12px;
   margin-bottom: 14px;
-  color: #b91c1c;
   font-size: 13px;
+  white-space: pre-wrap;
 }
 .task-modal__error strong { display: block; margin-bottom: 4px; }
+.task-modal__error--hard {
+  background: #fff0f0;
+  border: 2px solid var(--danger);
+  color: #b91c1c;
+}
+.task-modal__error--soft {
+  background: #fff5db;
+  border: 2px solid #f59e0b;
+  color: #b45309;
+}
 .activity-list { max-height: 160px; }
 .activity-row {
   font-size: 11px;
@@ -936,6 +945,8 @@ details[open] summary { margin-bottom: 8px; }
   background: #e8ebff; color: #3a3a6a;
 }
 .chip--alert { background: #ffecec; color: var(--danger); }
+.chip--warn { background: #fff5db; color: #b45309; }
+.chip--success { background: #e6f9f0; color: #047857; }
 .modal__block { margin-bottom: 16px; }
 .modal__block h3 { margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #8a6a40; }
 .modal__block p { margin: 0; font-size: 13px; line-height: 1.5; color: #1a1a2e; }

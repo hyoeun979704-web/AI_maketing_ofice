@@ -56,12 +56,20 @@ async function executeTask(taskId) {
   try {
     const result = await runTask(task);
     const { output, systemPrompt, userPrompt, mode } = result;
-    queue.updateTask(taskId, { output, systemPrompt, userPrompt, mode, fetchedUrl: result.fetchedUrl, missingData: result.missingData, fetchError: result.fetchError });
+    queue.updateTask(taskId, {
+      output, systemPrompt, userPrompt, mode,
+      fetchedUrl: result.fetchedUrl,
+      missingData: result.missingData,
+      fetchError: result.fetchError,
+      apiError: result.apiError,
+    });
 
-    // Honest status reporting: modes that mean "I couldn't actually do the
-    // work" must not show as 'completed' (green). Use 'blocked' instead so
-    // the UI can render them differently.
-    if (mode === 'blocked' || mode === 'data-needed' || mode === 'fetch-failed') {
+    // Only these modes mean "we really couldn't do the work":
+    //   blocked        — prerequisites missing (no company, no target)
+    // All others (api, api-with-warnings, simulation, fallback-simulation,
+    // framework-only) represent *some* useful output — they go through
+    // the normal completion / approval path.
+    if (mode === 'blocked') {
       queue.updateTask(taskId, { status: 'blocked', finishedAt: Date.now() });
       queue.setAgentStatus(task.agent, 'idle');
       return;
@@ -78,7 +86,7 @@ async function executeTask(taskId) {
     queue.updateTask(taskId, {
       status: 'failed',
       finishedAt: Date.now(),
-      output: `⚠️ 실행 실패: ${err.message}`,
+      output: `⚠️ 예상치 못한 오류: ${err.message}`,
     });
     queue.setAgentStatus(task.agent, 'idle');
   }
