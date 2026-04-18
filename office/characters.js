@@ -57,9 +57,8 @@ function buildDeskSlot(skill, dept) {
     <div class="desk-monitor"></div>
     <div class="desk-top"></div>
     <div class="agent idle" data-agent="${skill.name}">
-      <div class="agent__body">
-        <div class="agent__face">${skill.emoji}</div>
-      </div>
+      ${catSvg(dept.color)}
+      <div class="agent__badge-emoji" title="${escapeAttr(skill.displayName)}">${skill.emoji}</div>
       ${skill.localized ? '<div class="agent__badge">KO</div>' : ''}
     </div>
     <div class="agent-name">${shortName(skill.displayName)}</div>
@@ -68,6 +67,54 @@ function buildDeskSlot(skill, dept) {
   const agentEl = slot.querySelector('.agent');
   agentNodes.set(skill.name, agentEl);
   return slot;
+}
+
+function escapeAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+
+// Pre-rendered cat SVG. Per-character variation comes from the body color
+// (passed in) and the deterministic accessory palette derived from the
+// skill name (so each cat looks visually distinct but stable).
+function catSvg(bodyColor) {
+  // Slightly darken the body for ear inner contour, keep it consistent.
+  // We rely on stroke for outline and a few colored accents.
+  return `
+<svg class="cat" viewBox="0 0 80 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- tail -->
+  <path d="M 64 70 Q 78 64 72 48" fill="none" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round" />
+  <path d="M 64 70 Q 76 64 70 50" fill="none" stroke="${bodyColor}" stroke-width="2.5" stroke-linecap="round" />
+  <!-- back legs hidden by desk -->
+  <!-- body -->
+  <ellipse cx="40" cy="58" rx="30" ry="28" fill="${bodyColor}" stroke="#1a1a2e" stroke-width="3.5" />
+  <!-- belly highlight -->
+  <ellipse cx="40" cy="68" rx="14" ry="10" fill="rgba(255,255,255,0.32)" />
+  <!-- ears -->
+  <path d="M 14 30 L 18 8 L 30 26 Z" fill="${bodyColor}" stroke="#1a1a2e" stroke-width="3.5" stroke-linejoin="round" />
+  <path d="M 66 30 L 62 8 L 50 26 Z" fill="${bodyColor}" stroke="#1a1a2e" stroke-width="3.5" stroke-linejoin="round" />
+  <!-- inner ears (pink) -->
+  <path d="M 19 24 L 22 14 L 26 23 Z" fill="#ff9eb5" />
+  <path d="M 61 24 L 58 14 L 54 23 Z" fill="#ff9eb5" />
+  <!-- whiskers -->
+  <path d="M 6 52 L 18 50" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M 6 56 L 18 56" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M 74 52 L 62 50" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M 74 56 L 62 56" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round" />
+  <!-- cheeks -->
+  <circle cx="18" cy="58" r="4.5" fill="#ff9eb5" opacity="0.78" />
+  <circle cx="62" cy="58" r="4.5" fill="#ff9eb5" opacity="0.78" />
+  <!-- eyes (whites) -->
+  <ellipse class="cat-eye left"  cx="28" cy="46" rx="6.5" ry="7.5" fill="white" stroke="#1a1a2e" stroke-width="2.5" />
+  <ellipse class="cat-eye right" cx="52" cy="46" rx="6.5" ry="7.5" fill="white" stroke="#1a1a2e" stroke-width="2.5" />
+  <!-- pupils -->
+  <ellipse class="cat-pupil left"  cx="29" cy="47" rx="2.6" ry="3.8" fill="#1a1a2e" />
+  <ellipse class="cat-pupil right" cx="53" cy="47" rx="2.6" ry="3.8" fill="#1a1a2e" />
+  <!-- pupil shines -->
+  <circle cx="30.5" cy="45" r="1" fill="white" />
+  <circle cx="54.5" cy="45" r="1" fill="white" />
+  <!-- nose -->
+  <path d="M 36 56 L 44 56 L 40 60 Z" fill="#ff5577" stroke="#1a1a2e" stroke-width="1.4" stroke-linejoin="round" />
+  <!-- mouth -->
+  <path d="M 33 62 Q 36 65 40 62 Q 44 65 47 62" stroke="#1a1a2e" fill="none" stroke-width="2" stroke-linecap="round" />
+</svg>`;
 }
 
 function shortName(displayName) {

@@ -16,6 +16,15 @@
         <div class="status-pill" id="api-status" title="ANTHROPIC_API_KEY 환경변수에 의해 결정">—</div>
       </header>
 
+      <section class="company-card" id="company-card">
+        <div class="company-card__inner">
+          <div class="company-card__label">담당 마케팅 대상</div>
+          <div class="company-card__name" id="company-name">미등록</div>
+          <div class="company-card__url" id="company-url">회사·URL을 등록하면 직원들이 실제로 일을 시작합니다.</div>
+        </div>
+        <button class="btn btn--primary btn--sm" id="btn-edit-company">회사 정보</button>
+      </section>
+
       <section class="kpis">
         <div class="kpi"><span class="kpi__label">직원</span><span class="kpi__value" id="kpi-total">0</span></div>
         <div class="kpi"><span class="kpi__label">업무중</span><span class="kpi__value" id="kpi-working">0</span></div>
@@ -53,7 +62,13 @@
     </aside>
 
     <!-- ======================= MAIN (ISOMETRIC ROOM) ======================= -->
-    <main class="scene">
+    <main class="scene" id="scene">
+      <div class="scene__controls" aria-label="화면 조작">
+        <button class="scene__ctrl" id="ctrl-zoom-in"  title="확대 (+)">＋</button>
+        <button class="scene__ctrl" id="ctrl-zoom-out" title="축소 (−)">−</button>
+        <button class="scene__ctrl" id="ctrl-fit"      title="화면 맞춤">⤢</button>
+      </div>
+
       <div class="scene__camera" id="camera">
         <div class="room" id="room">
           <!-- floor tiles and agents injected by characters.js -->
@@ -63,6 +78,61 @@
 
       <div class="scene__legend" id="legend"></div>
     </main>
+  </div>
+
+  <!-- ==================== COMPANY MODAL ==================== -->
+  <div class="modal" id="company-modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="company-modal-title">
+      <button class="modal__close" data-close aria-label="닫기">✕</button>
+      <div class="modal__head">
+        <div class="modal__avatar">🏢</div>
+        <div>
+          <h2 id="company-modal-title">담당 마케팅 대상 등록</h2>
+          <p class="modal__sub">이 정보는 모든 직원이 작업의 근거로 사용합니다. 등록 전에는 직원들이 일을 거부합니다.</p>
+        </div>
+      </div>
+
+      <form id="company-form" class="form">
+        <label class="form__field">
+          <span class="form__label">회사명 <em>*</em></span>
+          <input type="text" name="name" required placeholder="예: 우리회사" />
+        </label>
+        <label class="form__field">
+          <span class="form__label">타겟 사이트 URL <em>*</em></span>
+          <input type="url" name="url" required placeholder="https://example.com" />
+        </label>
+        <label class="form__field">
+          <span class="form__label">한 줄 설명 <em>*</em></span>
+          <textarea name="description" required rows="2" placeholder="예: 한국 SMB를 위한 SaaS 회계 자동화"></textarea>
+        </label>
+        <label class="form__field">
+          <span class="form__label">타겟 오디언스</span>
+          <textarea name="audience" rows="2" placeholder="예: 직원 5-50명 규모의 한국 스타트업 재무 담당자"></textarea>
+        </label>
+        <label class="form__field">
+          <span class="form__label">브랜드 톤</span>
+          <input type="text" name="voice" placeholder="예: 친근하지만 전문적, 숫자 위주" />
+        </label>
+        <label class="form__field">
+          <span class="form__label">비즈니스 목표</span>
+          <textarea name="goals" rows="2" placeholder="예: 분기당 신규 트라이얼 200건, 유료 전환율 18%"></textarea>
+        </label>
+        <label class="form__field">
+          <span class="form__label">경쟁사·대안</span>
+          <input type="text" name="competitors" placeholder="예: 더존비즈온, 자비스앤빌런즈" />
+        </label>
+        <label class="form__field">
+          <span class="form__label">추가 메모</span>
+          <textarea name="notes" rows="2" placeholder="예: PIPA 컴플라이언스 우선, 부산 지사 별도 운영"></textarea>
+        </label>
+
+        <div class="form__buttons">
+          <button type="button" class="btn btn--ghost" data-close>취소</button>
+          <button type="submit" class="btn btn--primary">저장하고 직원들 출근시키기</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ==================== APPROVAL MODAL ==================== -->
@@ -148,6 +218,8 @@
           <div class="modal__badges" id="task-modal-badges"></div>
         </div>
       </div>
+
+      <div class="task-modal__error" id="task-modal-error" hidden></div>
 
       <section class="modal__block">
         <h3>📥 에이전트가 받은 지시 (user prompt)</h3>
