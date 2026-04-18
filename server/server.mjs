@@ -20,7 +20,8 @@ import { existsSync } from 'node:fs';
 import * as queue from './queue.mjs';
 import * as scheduler from './scheduler.mjs';
 import { hasApiKey } from './agent.mjs';
-import { getCompany, saveCompany, isProfileReady } from './company.mjs';
+import { getCompany, saveCompany, isProfileReady, PREDEFINED_GOALS, TARGET_KINDS } from './company.mjs';
+import { logDataDir } from './paths.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const STATIC_ROOT = join(ROOT, 'office');
@@ -137,8 +138,15 @@ const server = createServer(async (req, res) => {
     if (url.pathname === '/api/company' && req.method === 'POST') {
       const body = await readBody(req);
       if (!body || typeof body !== 'object') return json(res, 400, { error: 'JSON body required' });
-      const saved = await saveCompany(body);
-      return json(res, 200, saved);
+      try {
+        const saved = await saveCompany(body);
+        return json(res, 200, saved);
+      } catch (err) {
+        return json(res, 500, { error: err.message });
+      }
+    }
+    if (url.pathname === '/api/company/meta' && req.method === 'GET') {
+      return json(res, 200, { goals: PREDEFINED_GOALS, targetKinds: TARGET_KINDS });
     }
     if (url.pathname === '/api/stream' && req.method === 'GET') {
       return handleSSE(req, res);
@@ -173,6 +181,7 @@ server.listen(PORT, async () => {
   console.log(`🏢 AI Marketing Office server listening on http://localhost:${PORT}`);
   console.log(`   API key: ${hasApiKey() ? 'present — real Claude execution' : 'not set — simulation mode'}`);
   console.log(`   Model  : ${process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'}`);
+  try { logDataDir(); } catch (err) { console.error('⚠️ ' + err.message); }
   await scheduler.start({ seedCount: 6, spawnIntervalMs: 15_000 });
   console.log(`   Scheduler: seeded 6 tasks, auto-spawn every 15s`);
 });

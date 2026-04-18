@@ -80,7 +80,10 @@ function renderCompanyCard() {
   if (state.companyReady && state.company) {
     card.classList.remove('unset');
     nameEl.textContent = state.company.name;
-    urlEl.textContent = state.company.url;
+    const targets = state.company.targets || [];
+    if (targets.length === 0) urlEl.textContent = '타겟 미등록';
+    else if (targets.length === 1) urlEl.textContent = targets[0].url;
+    else urlEl.textContent = `${targets.length}개 타겟: ${targets.map((t) => t.label || t.kind).join(', ')}`;
     urlEl.title = state.company.description;
   } else {
     card.classList.add('unset');
@@ -144,18 +147,93 @@ function wireScene() {
 
 // ---------- Company modal ----------
 const companyModal = document.getElementById('company-modal');
-function openCompanyModal() {
+let formMeta = null; // { goals: [{key,label}], targetKinds: [{key,label}] }
+
+async function loadFormMeta() {
+  if (formMeta) return formMeta;
+  const res = await fetch('/api/company/meta');
+  formMeta = await res.json();
+  return formMeta;
+}
+
+function buildGoalsGrid(selected = []) {
+  const grid = document.getElementById('goals-grid');
+  grid.innerHTML = '';
+  for (const g of formMeta.goals) {
+    const label = document.createElement('label');
+    label.className = 'goal-chip';
+    label.innerHTML = `
+      <input type="checkbox" value="${escapeHtmlAttr(g.key)}" ${selected.includes(g.key) ? 'checked' : ''}>
+      <span>${escapeHtmlAttr(g.label)}</span>
+    `;
+    grid.appendChild(label);
+  }
+}
+
+function buildTargetsList(targets = []) {
+  const list = document.getElementById('targets-list');
+  list.innerHTML = '';
+  const rows = targets.length ? targets : [{ kind: 'website', label: '메인 사이트', url: '' }];
+  for (const t of rows) addTargetRow(t);
+}
+
+function addTargetRow(t = { kind: 'website', label: '', url: '' }) {
+  const list = document.getElementById('targets-list');
+  const row = document.createElement('div');
+  row.className = 'target-row';
+  const opts = formMeta.targetKinds.map(
+    (k) => `<option value="${k.key}"${k.key === t.kind ? ' selected' : ''}>${escapeHtmlAttr(k.label)}</option>`
+  ).join('');
+  row.innerHTML = `
+    <select class="target-row__kind">${opts}</select>
+    <input class="target-row__label" type="text" placeholder="라벨 (예: 메인 사이트)" value="${escapeHtmlAttr(t.label || '')}">
+    <input class="target-row__url" type="url" placeholder="https://..." value="${escapeHtmlAttr(t.url || '')}">
+    <button type="button" class="target-row__remove" aria-label="이 타겟 삭제">✕</button>
+  `;
+  row.querySelector('.target-row__remove').addEventListener('click', () => row.remove());
+  list.appendChild(row);
+}
+
+function collectForm() {
+  const form = document.getElementById('company-form');
+  const out = {
+    name: form.name.value.trim(),
+    description: form.description.value.trim(),
+    audience: form.audience.value.trim(),
+    voice: form.voice.value.trim(),
+    competitors: form.competitors.value.trim(),
+    notes: form.notes.value.trim(),
+    customGoals: form.customGoals.value.trim(),
+  };
+  out.goals = [...document.querySelectorAll('#goals-grid input[type="checkbox"]:checked')].map((cb) => cb.value);
+  out.targets = [...document.querySelectorAll('#targets-list .target-row')]
+    .map((row) => ({
+      kind: row.querySelector('.target-row__kind').value,
+      label: row.querySelector('.target-row__label').value.trim(),
+      url: row.querySelector('.target-row__url').value.trim(),
+    }))
+    .filter((t) => t.url);
+  return out;
+}
+
+function escapeHtmlAttr(s) {
+  return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function openCompanyModal() {
+  await loadFormMeta();
   const form = document.getElementById('company-form');
   const c = state.company || {};
-  for (const field of form.elements) {
-    if (field.name && field.name in c) field.value = c[field.name] || '';
+  // Simple text fields
+  for (const f of ['name','description','audience','voice','competitors','notes','customGoals']) {
+    if (form[f]) form[f].value = c[f] || '';
   }
+  buildGoalsGrid(c.goals || []);
+  buildTargetsList(c.targets || []);
   companyModal.hidden = false;
-  // Focus the first empty field
   setTimeout(() => {
-    for (const field of form.elements) {
-      if (field.name && !field.value) { field.focus(); break; }
-    }
+    const firstEmpty = [...form.elements].find((f) => f.name && !f.value && f.type !== 'checkbox');
+    if (firstEmpty) firstEmpty.focus();
   }, 50);
 }
 function closeCompanyModal() { companyModal.hidden = true; }
@@ -166,20 +244,31 @@ function wireCompanyModal() {
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !companyModal.hidden) closeCompanyModal(); });
 
+  document.getElementById('btn-add-target').addEventListener('click', () => addTargetRow());
+
   document.getElementById('company-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.target));
+    const data = collectForm();
+    if (!data.name || !data.description) {
+      alert('회사명과 설명은 필수입니다.');
+      return;
+    }
+    if (!data.targets.length) {
+      alert('최소 1개의 타겟 자산(URL)을 등록하세요.');
+      return;
+    }
     const res = await fetch('/api/company', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      alert('저장 실패: ' + (await res.text()));
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      alert('저장 실패: ' + err.error);
       return;
     }
     state.company = await res.json();
-    state.companyReady = Boolean(state.company.name && state.company.url && state.company.description);
+    state.companyReady = Boolean(state.company.name && state.company.description && state.company.targets?.length);
     renderCompanyCard();
     closeCompanyModal();
   });

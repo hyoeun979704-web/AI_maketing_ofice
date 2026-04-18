@@ -99,13 +99,17 @@
           <input type="text" name="name" required placeholder="예: 우리회사" />
         </label>
         <label class="form__field">
-          <span class="form__label">타겟 사이트 URL <em>*</em></span>
-          <input type="url" name="url" required placeholder="https://example.com" />
-        </label>
-        <label class="form__field">
           <span class="form__label">한 줄 설명 <em>*</em></span>
           <textarea name="description" required rows="2" placeholder="예: 한국 SMB를 위한 SaaS 회계 자동화"></textarea>
         </label>
+
+        <fieldset class="form__fieldset">
+          <legend>타겟 자산 (최소 1개) <em>*</em></legend>
+          <p class="form__hint">부서별로 필요한 자산을 다르게 등록하세요. 예: SEO/CRO는 웹사이트, ASO는 앱스토어, 소셜콘텐츠는 YouTube 등.</p>
+          <div class="targets-list" id="targets-list"></div>
+          <button type="button" class="btn btn--ghost btn--sm" id="btn-add-target">+ 타겟 추가</button>
+        </fieldset>
+
         <label class="form__field">
           <span class="form__label">타겟 오디언스</span>
           <textarea name="audience" rows="2" placeholder="예: 직원 5-50명 규모의 한국 스타트업 재무 담당자"></textarea>
@@ -114,10 +118,16 @@
           <span class="form__label">브랜드 톤</span>
           <input type="text" name="voice" placeholder="예: 친근하지만 전문적, 숫자 위주" />
         </label>
-        <label class="form__field">
-          <span class="form__label">비즈니스 목표</span>
-          <textarea name="goals" rows="2" placeholder="예: 분기당 신규 트라이얼 200건, 유료 전환율 18%"></textarea>
-        </label>
+
+        <fieldset class="form__fieldset">
+          <legend>비즈니스 목표 (복수 선택)</legend>
+          <div class="goals-grid" id="goals-grid"></div>
+          <label class="form__field">
+            <span class="form__label">기타 (자유 입력)</span>
+            <input type="text" name="customGoals" placeholder="예: 부산 시장 30% 점유율" />
+          </label>
+        </fieldset>
+
         <label class="form__field">
           <span class="form__label">경쟁사·대안</span>
           <input type="text" name="competitors" placeholder="예: 더존비즈온, 자비스앤빌런즈" />

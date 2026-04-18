@@ -111,6 +111,75 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 .form__field input:focus,
 .form__field textarea:focus { outline: none; border-color: var(--accent-2); background: white; }
 .form__buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+.form__fieldset {
+  border: 2px solid #e0c7a0;
+  border-radius: 10px;
+  padding: 10px 12px 12px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fffbf2;
+}
+.form__fieldset legend {
+  font-size: 12px;
+  font-weight: 700;
+  color: #5a3a1a;
+  padding: 0 6px;
+  letter-spacing: 0.3px;
+}
+.form__fieldset legend em { color: var(--danger); font-style: normal; }
+.form__hint { font-size: 11px; color: #8a6a40; margin: 0; line-height: 1.4; }
+
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 10px;
+}
+.goal-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  user-select: none;
+}
+.goal-chip:hover { background: #fff5e0; }
+.goal-chip input { width: 15px; height: 15px; accent-color: var(--accent-2); cursor: pointer; }
+
+.targets-list { display: flex; flex-direction: column; gap: 8px; }
+.target-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 1fr auto;
+  gap: 6px;
+  align-items: center;
+}
+.target-row select,
+.target-row input {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 8px;
+  background: white;
+  border: 2px solid #c89982;
+  border-radius: 6px;
+  color: #1a1a2e;
+}
+.target-row select:focus,
+.target-row input:focus { outline: none; border-color: var(--accent-2); }
+.target-row__remove {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid #c89982;
+  color: var(--danger);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+}
+.target-row__remove:hover { background: #ffecec; border-color: var(--danger); }
 
 .kpis {
   display: grid;
@@ -279,16 +348,29 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
     radial-gradient(circle at 30% 0%, #ffeccc 0%, transparent 60%),
     linear-gradient(180deg, #fbe5cd 0%, #eac4a0 100%);
   cursor: grab;
+  /* Force scrollbars so users know the room is bigger than the viewport */
+  scrollbar-width: auto;
+  scrollbar-color: #c89982 #fbe5cd;
 }
+.scene::-webkit-scrollbar { width: 14px; height: 14px; }
+.scene::-webkit-scrollbar-track { background: #fbe5cd; }
+.scene::-webkit-scrollbar-thumb {
+  background: #c89982;
+  border-radius: 8px;
+  border: 3px solid #fbe5cd;
+}
+.scene::-webkit-scrollbar-thumb:hover { background: #a67866; }
 .scene.dragging { cursor: grabbing; }
+
+/* The camera is a plain block that's at least as big as its room.
+   Using flex with align-items:center here caused the classic "flex
+   overflow is unscrollable on the top/bottom" gotcha — we drop flex and
+   just pad + auto-margin for centering. */
 .scene__camera {
   position: relative;
-  min-width: 1480px;
-  min-height: 1180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 50px;
+  display: inline-block;
+  padding: 50px 60px 120px;  /* extra bottom padding so legend doesn't cover last row */
+  min-width: max-content;
 }
 
 /* Floating zoom + fit controls anchored to the scene viewport */
@@ -712,17 +794,19 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
   position: fixed;
   bottom: 16px;
   right: 16px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.82);
   border: 2px solid #2a2a3a;
   border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 11px;
+  padding: 8px 12px;
+  font-size: 10.5px;
   color: #2a2a3a;
-  line-height: 1.6;
-  max-width: 280px;
+  line-height: 1.55;
+  max-width: 260px;
   z-index: 10;
   box-shadow: 0 4px 0 #2a2a3a;
+  pointer-events: none;
 }
+.scene__legend:hover { background: rgba(255, 255, 255, 0.98); pointer-events: auto; }
 .scene__legend strong { color: #1a1a2e; }
 
 /* ======================= MODAL ======================= */

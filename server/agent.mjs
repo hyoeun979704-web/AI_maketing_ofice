@@ -17,7 +17,7 @@
 import { readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getCompany, isProfileReady, contextBlock } from './company.mjs';
+import { getCompany, isProfileReady, contextBlock, pickTargetForSkill } from './company.mjs';
 import { fetchPage } from './tools/fetch-page.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -135,17 +135,36 @@ ${missing.map((m) => `- ${m}`).join('\n')}
     };
   }
 
-  // For URL-analyzable skills, fetch the page first.
+  // For URL-analyzable skills, pick the most appropriate target for THIS
+  // skill (aso-audit → appstore, social-content → a social URL, etc.)
+  // and fetch it.
   let pageContext = '';
   let fetchedUrl = null;
-  if (URL_ANALYZING_SKILLS.has(agent) && company.url) {
+  let fetchedLabel = null;
+  if (URL_ANALYZING_SKILLS.has(agent)) {
+    const target = pickTargetForSkill(company, agent);
+    if (!target || !target.url) {
+      return {
+        output: `⚠️ 이 직원이 분석할 타겟 URL이 등록되어 있지 않습니다.
+
+스킬: ${agent}
+권장 타겟 종류: ${(await import('./company.mjs')).SKILL_TARGET_PREFERENCES?.[agent]?.join(', ') || 'website'}
+
+"회사 정보" 모달에서 해당 종류의 타겟을 추가해주세요.`,
+        systemPrompt: sysPrompt,
+        userPrompt: buildUserPrompt({ title, kind }),
+        mode: 'blocked',
+        missingData: ['해당 스킬용 타겟 URL'],
+      };
+    }
     try {
-      const page = await fetchPage(company.url);
+      const page = await fetchPage(target.url);
       fetchedUrl = page.url;
-      pageContext = formatPageForPrompt(page);
+      fetchedLabel = target.label || target.kind;
+      pageContext = `# 사이트 데이터 (${fetchedLabel} · ${target.kind})\n` + formatPageForPrompt(page);
     } catch (err) {
       return {
-        output: `❌ 등록된 URL(${company.url})을 가져오지 못해 작업을 진행할 수 없습니다.
+        output: `❌ 등록된 타겟 "${target.label || target.kind}"(${target.url})을 가져오지 못해 작업을 진행할 수 없습니다.
 
 오류: ${err.message}
 
@@ -157,6 +176,7 @@ ${missing.map((m) => `- ${m}`).join('\n')}
         userPrompt: buildUserPrompt({ title, kind }),
         mode: 'fetch-failed',
         fetchError: err.message,
+        fetchedUrl: target.url,
       };
     }
   }
@@ -221,7 +241,7 @@ ${missing.map((m) => `- ${m}`).join('\n')}
 function formatPageForPrompt(page) {
   const s = page.summary || {};
   const lines = [];
-  lines.push(`# 사이트 데이터 (${page.url})`);
+  lines.push(`- URL: ${page.url}`);
   lines.push(`- HTTP ${page.status} · ${page.contentType || ''} · ${page.bytes || 0} bytes`);
   if (s.title) lines.push(`- title: "${s.title}"`);
   if (s.metaDescription) lines.push(`- meta description (${s.metaDescription.length}자): "${s.metaDescription}"`);
