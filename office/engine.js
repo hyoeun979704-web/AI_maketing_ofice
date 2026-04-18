@@ -11,6 +11,9 @@ const state = {
   agentStatus: new Map(),
   activity: [],
   apiKeyPresent: false,
+  company: null,
+  companyReady: false,
+  zoom: 1,
 };
 
 // ---------- Skills data (shared with build-data.mjs) ----------
@@ -30,7 +33,10 @@ async function bootstrap() {
 
   const initial = await fetch('/api/state').then((r) => r.json());
   state.apiKeyPresent = initial.apiKeyPresent;
+  state.company = initial.company;
+  state.companyReady = initial.companyReady;
   updateApiStatusPill();
+  renderCompanyCard();
 
   applySnapshot(initial);
   renderAll();
@@ -56,6 +62,127 @@ async function bootstrap() {
 
   // Wire desk clicks for agent detail modal
   wireDeskClicks();
+
+  // Wire zoom + pan controls
+  wireScene();
+
+  // Wire company modal
+  wireCompanyModal();
+
+  // If no company registered yet, open the modal automatically
+  if (!state.companyReady) setTimeout(() => openCompanyModal(), 500);
+}
+
+function renderCompanyCard() {
+  const card = document.getElementById('company-card');
+  const nameEl = document.getElementById('company-name');
+  const urlEl = document.getElementById('company-url');
+  if (state.companyReady && state.company) {
+    card.classList.remove('unset');
+    nameEl.textContent = state.company.name;
+    urlEl.textContent = state.company.url;
+    urlEl.title = state.company.description;
+  } else {
+    card.classList.add('unset');
+    nameEl.textContent = '미등록';
+    urlEl.textContent = '회사·URL을 등록하면 직원들이 실제로 일을 시작합니다.';
+  }
+}
+
+// ---------- Scene zoom + pan ----------
+function wireScene() {
+  const scene = document.getElementById('scene');
+  const room = document.getElementById('room');
+
+  const apply = () => room.style.setProperty('--zoom', state.zoom);
+  document.getElementById('ctrl-zoom-in').addEventListener('click', () => {
+    state.zoom = Math.min(1.6, state.zoom + 0.15);
+    apply();
+  });
+  document.getElementById('ctrl-zoom-out').addEventListener('click', () => {
+    state.zoom = Math.max(0.5, state.zoom - 0.15);
+    apply();
+  });
+  document.getElementById('ctrl-fit').addEventListener('click', () => {
+    state.zoom = 1;
+    apply();
+    // also re-center
+    scene.scrollTo({
+      left: (scene.scrollWidth - scene.clientWidth) / 2,
+      top: (scene.scrollHeight - scene.clientHeight) / 2,
+      behavior: 'smooth',
+    });
+  });
+
+  // Drag-to-pan
+  let dragging = false;
+  let startX = 0, startY = 0, scrollX = 0, scrollY = 0;
+  scene.addEventListener('mousedown', (e) => {
+    // Only start panning when clicking outside an interactive element
+    if (e.target.closest('.desk-slot, .scene__ctrl, button, a, input, textarea')) return;
+    dragging = true;
+    scene.classList.add('dragging');
+    startX = e.pageX; startY = e.pageY;
+    scrollX = scene.scrollLeft; scrollY = scene.scrollTop;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    scene.scrollLeft = scrollX - (e.pageX - startX);
+    scene.scrollTop  = scrollY - (e.pageY - startY);
+  });
+  document.addEventListener('mouseup', () => { dragging = false; scene.classList.remove('dragging'); });
+
+  // Center the room initially
+  setTimeout(() => {
+    scene.scrollTo({
+      left: (scene.scrollWidth - scene.clientWidth) / 2,
+      top:  (scene.scrollHeight - scene.clientHeight) / 2,
+    });
+  }, 100);
+}
+
+// ---------- Company modal ----------
+const companyModal = document.getElementById('company-modal');
+function openCompanyModal() {
+  const form = document.getElementById('company-form');
+  const c = state.company || {};
+  for (const field of form.elements) {
+    if (field.name && field.name in c) field.value = c[field.name] || '';
+  }
+  companyModal.hidden = false;
+  // Focus the first empty field
+  setTimeout(() => {
+    for (const field of form.elements) {
+      if (field.name && !field.value) { field.focus(); break; }
+    }
+  }, 50);
+}
+function closeCompanyModal() { companyModal.hidden = true; }
+function wireCompanyModal() {
+  document.getElementById('btn-edit-company').addEventListener('click', openCompanyModal);
+  companyModal.addEventListener('click', (e) => {
+    if (e.target.closest('[data-close]') || (!e.target.closest('.modal__card'))) closeCompanyModal();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !companyModal.hidden) closeCompanyModal(); });
+
+  document.getElementById('company-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    const res = await fetch('/api/company', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      alert('저장 실패: ' + (await res.text()));
+      return;
+    }
+    state.company = await res.json();
+    state.companyReady = Boolean(state.company.name && state.company.url && state.company.description);
+    renderCompanyCard();
+    closeCompanyModal();
+  });
 }
 
 // ---------- Meetings ----------
@@ -170,7 +297,7 @@ function renderAll() {
 function renderCompleted() {
   const el = document.getElementById('completed-list');
   const done = [...state.tasks.values()]
-    .filter((t) => t.status === 'completed' || t.status === 'rejected' || t.status === 'failed')
+    .filter((t) => t.status === 'completed' || t.status === 'rejected' || t.status === 'failed' || t.status === 'blocked')
     .sort((a, b) => (b.finishedAt || 0) - (a.finishedAt || 0))
     .slice(0, 15);
   document.getElementById('completed-count').textContent = done.length;
@@ -182,7 +309,11 @@ function renderCompleted() {
   for (const t of done) {
     const agent = state.agentsByName.get(t.agent);
     const row = document.createElement('li');
-    row.className = 'task-row';
+    row.className = 'task-row'
+      + (t.status === 'failed' ? ' is-failed'
+      : t.status === 'rejected' ? ' is-rejected'
+      : t.status === 'blocked' ? ' is-blocked'
+      : '');
     row.innerHTML = `
       <span class="task-row__emoji">${agent?.emoji || '🧑‍💼'}</span>
       <span class="task-row__title">
@@ -242,7 +373,11 @@ function renderTasks() {
   for (const t of live) {
     const agent = state.agentsByName.get(t.agent);
     const row = document.createElement('li');
-    row.className = 'task-row';
+    row.className = 'task-row'
+      + (t.status === 'failed' ? ' is-failed'
+      : t.status === 'rejected' ? ' is-rejected'
+      : t.status === 'blocked' ? ' is-blocked'
+      : '');
     row.innerHTML = `
       <span class="task-row__emoji">${agent?.emoji || '🧑‍💼'}</span>
       <span class="task-row__title">
@@ -345,6 +480,26 @@ function openTaskModal(task) {
   addBadgeTo(badges, task.kind || 'draft', 'badge');
   if (task.mode === 'api') addBadgeTo(badges, 'Claude API', 'chip chip--alert');
   else if (task.mode === 'simulation') addBadgeTo(badges, '시뮬레이션', 'chip');
+  else if (task.mode === 'blocked') addBadgeTo(badges, '회사 미등록', 'chip chip--alert');
+  else if (task.mode === 'data-needed') addBadgeTo(badges, '데이터 연결 필요', 'chip chip--alert');
+  else if (task.mode === 'fetch-failed') addBadgeTo(badges, 'URL 가져오기 실패', 'chip chip--alert');
+  if (task.fetchedUrl) addBadgeTo(badges, '🌐 ' + truncate(task.fetchedUrl, 40), 'badge');
+
+  // Error banner for failures
+  const errBanner = document.getElementById('task-modal-error');
+  if (task.status === 'failed' || task.status === 'blocked' || task.mode === 'fetch-failed' || task.mode === 'data-needed' || task.mode === 'blocked') {
+    let title = '실행이 멈춘 이유';
+    let detail = '';
+    if (task.mode === 'blocked') { title = '회사 정보 미등록'; detail = '사이드바의 "회사 정보" 버튼에서 회사명·URL·설명을 등록한 뒤 다시 시도하세요.'; }
+    else if (task.mode === 'data-needed') { title = '외부 데이터 연결 필요'; detail = (task.missingData || []).map((m) => '• ' + m).join('\n'); }
+    else if (task.mode === 'fetch-failed') { title = 'URL 가져오기 실패'; detail = task.fetchError || ''; }
+    else if (task.status === 'failed') { title = '실행 실패'; detail = (task.output || '').replace(/^⚠️ 실행 실패:\s*/, ''); }
+    errBanner.hidden = false;
+    errBanner.innerHTML = `<strong>${escape(title)}</strong>${escape(detail || '')}`;
+  } else {
+    errBanner.hidden = true;
+    errBanner.innerHTML = '';
+  }
 
   document.getElementById('task-modal-user-prompt').textContent = task.userPrompt || '(요청 정보 없음)';
   document.getElementById('task-modal-output').textContent = task.output || '(작업 중이거나 결과 없음)';
@@ -388,6 +543,7 @@ function renderStatus(s) {
     completed: '완료',
     rejected: '거절',
     failed: '실패',
+    blocked: '진행 불가',
   }[s] || s;
 }
 

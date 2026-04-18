@@ -20,6 +20,7 @@ import { existsSync } from 'node:fs';
 import * as queue from './queue.mjs';
 import * as scheduler from './scheduler.mjs';
 import { hasApiKey } from './agent.mjs';
+import { getCompany, saveCompany, isProfileReady } from './company.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const STATIC_ROOT = join(ROOT, 'office');
@@ -122,10 +123,22 @@ const server = createServer(async (req, res) => {
 
   try {
     if (url.pathname === '/api/state' && req.method === 'GET') {
+      const company = await getCompany();
       return json(res, 200, {
         ...queue.getSnapshot(),
         apiKeyPresent: hasApiKey(),
+        company,
+        companyReady: isProfileReady(company),
       });
+    }
+    if (url.pathname === '/api/company' && req.method === 'GET') {
+      return json(res, 200, await getCompany());
+    }
+    if (url.pathname === '/api/company' && req.method === 'POST') {
+      const body = await readBody(req);
+      if (!body || typeof body !== 'object') return json(res, 400, { error: 'JSON body required' });
+      const saved = await saveCompany(body);
+      return json(res, 200, saved);
     }
     if (url.pathname === '/api/stream' && req.method === 'GET') {
       return handleSSE(req, res);

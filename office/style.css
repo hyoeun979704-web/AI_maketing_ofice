@@ -75,6 +75,43 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 .status-pill.live { background: rgba(88, 214, 141, 0.18); border-color: rgba(88,214,141,0.5); color: var(--success); }
 .status-pill.sim  { background: rgba(255, 204, 58, 0.14); border-color: rgba(255,204,58,0.4); color: var(--warn); }
 
+.company-card {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sidebar-b);
+  background: linear-gradient(180deg, rgba(255, 181, 90, 0.06), transparent);
+}
+.company-card.unset { background: linear-gradient(180deg, rgba(255, 107, 107, 0.18), transparent); }
+.company-card__inner { flex: 1; min-width: 0; }
+.company-card__label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); }
+.company-card__name { font-size: 14px; font-weight: 700; color: var(--accent); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.company-card__url { font-size: 10px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+.company-card.unset .company-card__name { color: var(--danger); }
+.company-card.unset .company-card__url { color: rgba(255,255,255,0.6); white-space: normal; line-height: 1.35; }
+.btn--sm { padding: 6px 10px; font-size: 11px; flex-shrink: 0; }
+
+/* Form inside company modal */
+.form { display: flex; flex-direction: column; gap: 12px; }
+.form__field { display: flex; flex-direction: column; gap: 4px; }
+.form__label { font-size: 11px; font-weight: 700; color: #5a3a1a; text-transform: uppercase; letter-spacing: 0.5px; }
+.form__label em { color: var(--danger); font-style: normal; }
+.form__field input,
+.form__field textarea {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  background: #fff5e6;
+  border: 2px solid #c89982;
+  border-radius: 8px;
+  color: #1a1a2e;
+  resize: vertical;
+}
+.form__field input:focus,
+.form__field textarea:focus { outline: none; border-color: var(--accent-2); background: white; }
+.form__buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -168,6 +205,35 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 .task-row__state.rejected { background: rgba(255,107,107,0.2); color: var(--danger); }
 .task-row__state.queued { background: rgba(188,188,214,0.1); color: var(--ink-soft); }
 .task-row__state.failed { background: rgba(255,107,107,0.2); color: var(--danger); }
+.task-row__state.blocked { background: rgba(255, 204, 58, 0.2); color: var(--warn); }
+
+/* Failed / rejected / blocked task highlighting in lists */
+.task-row.is-failed,
+.task-row.is-rejected {
+  background: rgba(255, 107, 107, 0.06);
+  border-left: 3px solid var(--danger);
+  padding-left: 5px;
+}
+.task-row.is-blocked {
+  background: rgba(255, 204, 58, 0.06);
+  border-left: 3px solid var(--warn);
+  padding-left: 5px;
+}
+.task-row.is-failed .task-row__title,
+.task-row.is-rejected .task-row__title { color: #ffb4b4; }
+.task-row.is-blocked .task-row__title { color: #ffddaa; }
+
+/* Error banner inside task modal */
+.task-modal__error {
+  background: #fff0f0;
+  border: 2px solid var(--danger);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  color: #b91c1c;
+  font-size: 13px;
+}
+.task-modal__error strong { display: block; margin-bottom: 4px; }
 .activity-list { max-height: 160px; }
 .activity-row {
   font-size: 11px;
@@ -212,22 +278,56 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
   background:
     radial-gradient(circle at 30% 0%, #ffeccc 0%, transparent 60%),
     linear-gradient(180deg, #fbe5cd 0%, #eac4a0 100%);
+  cursor: grab;
 }
+.scene.dragging { cursor: grabbing; }
 .scene__camera {
   position: relative;
-  min-width: 1100px;
-  min-height: 900px;
+  min-width: 1480px;
+  min-height: 1180px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 50px;
 }
 
-/* The room: looks isometric thanks to background skewed lines + walls */
+/* Floating zoom + fit controls anchored to the scene viewport */
+.scene__controls {
+  position: sticky;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid #2a2a3a;
+  border-radius: 10px;
+  padding: 4px;
+  box-shadow: 0 4px 0 #2a2a3a;
+  z-index: 30;
+  margin: 12px 0 0 12px;
+}
+.scene__ctrl {
+  width: 36px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 6px;
+  color: #2a2a3a;
+}
+.scene__ctrl:hover { background: #ffe7c8; }
+
+/* The room: looks isometric thanks to background skewed lines + walls.
+   Zoom is applied via CSS variable --zoom set by JS. */
 .room {
   position: relative;
-  width: 1020px;
-  height: 820px;
+  width: 1380px;
+  height: 1040px;
+  transform: scale(var(--zoom, 1));
+  transform-origin: top center;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -312,8 +412,8 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 
 .dept-zone__desks {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
-  gap: 14px 10px;
+  grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+  gap: 28px 14px;
   align-content: start;
 }
 
@@ -321,8 +421,8 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 
 .desk-slot {
   position: relative;
-  width: 82px;
-  height: 110px;
+  width: 108px;
+  height: 140px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -336,9 +436,9 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 .desk-top {
   position: absolute;
   bottom: 18px;
-  left: 6px;
-  right: 6px;
-  height: 16px;
+  left: 8px;
+  right: 8px;
+  height: 22px;
   background: linear-gradient(180deg, #f7d8aa 0%, #d9b07a 100%);
   border: 2px solid #6e4a26;
   border-radius: 4px;
@@ -348,11 +448,11 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 }
 .desk-monitor {
   position: absolute;
-  bottom: 36px;
+  bottom: 42px;
   left: 50%;
   transform: translateX(-50%);
-  width: 28px;
-  height: 22px;
+  width: 36px;
+  height: 28px;
   background: #1a1e3a;
   border: 2px solid #2a2a3a;
   border-radius: 3px;
@@ -367,53 +467,30 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
   border-radius: 1px;
 }
 
-/* Character: upright, big emoji face inside a colored circle */
+/* Character: SVG cat figure, upright. The cat is the agent's "body".
+   Below the body sits a small badge showing the skill emoji so each
+   agent's role stays identifiable at a glance. */
 .agent {
   position: absolute;
-  bottom: 38px;
+  bottom: 36px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
+  width: 80px;
+  height: 96px;
   pointer-events: none;
+  filter: drop-shadow(0 3px 0 rgba(0,0,0,0.18));
 }
-.agent__body {
-  width: 56px;
-  height: 56px;
-  border-radius: 50% 50% 42% 42% / 56% 56% 44% 44%;
-  background: var(--dept-color, #9ca3ff);
-  border: 3px solid #2a2a3a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 0 #2a2a3a, 0 6px 12px rgba(0, 0, 0, 0.18);
-  position: relative;
-  /* Two little ears on top, made by linear-gradient pseudo */
-}
-.agent__body::before,
-.agent__body::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  width: 14px;
-  height: 14px;
-  background: var(--dept-color, #9ca3ff);
-  border: 3px solid #2a2a3a;
-  border-radius: 50% 50% 30% 30%;
-  z-index: -1;
-}
-.agent__body::before { left: 4px; transform: rotate(-15deg); }
-.agent__body::after  { right: 4px; transform: rotate(15deg); }
-
-.agent__face {
-  font-size: 32px;
-  line-height: 1;
-  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.1));
-  transform: translateY(2px);
+.cat {
+  width: 80px;
+  height: 96px;
+  display: block;
+  transition: transform 0.18s;
 }
 .agent__badge {
   position: absolute;
-  top: -6px;
-  right: -8px;
+  top: -8px;
+  right: -10px;
   background: #dc2626;
   color: white;
   font-size: 9px;
@@ -422,6 +499,22 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
   border: 2px solid #2a2a3a;
   font-weight: 800;
   z-index: 5;
+}
+.agent__badge-emoji {
+  position: absolute;
+  bottom: -2px;
+  right: -8px;
+  background: white;
+  border: 2px solid #2a2a3a;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  z-index: 4;
+  box-shadow: 0 2px 0 #2a2a3a;
 }
 
 /* ---- States ---- */
