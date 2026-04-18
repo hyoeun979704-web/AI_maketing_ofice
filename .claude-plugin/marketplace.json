@@ -12,7 +12,7 @@
   "plugins": [
     {
       "name": "marketing-skills",
-      "description": "36 marketing skills for technical marketers and founders: ASO, CRO, copywriting, cold email, SEO, AI SEO, paid ads, ad creative, churn prevention, pricing strategy, referral programs, revenue operations, sales enablement, customer research, site architecture, and more",
+      "description": "38 marketing skills for technical marketers and founders: ASO, CRO, copywriting, cold email, SEO, AI SEO, paid ads, ad creative, churn prevention, pricing strategy, referral programs, revenue operations, sales enablement, customer research, site architecture, plus Korea-specific naver-kin-automation and video-script-automation. Bilingual (EN/KO) trigger phrases.",
       "source": "./",
       "strict": false,
       "skills": [
@@ -36,6 +36,7 @@
         "./skills/lead-magnets",
         "./skills/marketing-ideas",
         "./skills/marketing-psychology",
+        "./skills/naver-kin-automation",
         "./skills/onboarding-cro",
         "./skills/page-cro",
         "./skills/paid-ads",
@@ -51,7 +52,8 @@
         "./skills/seo-audit",
         "./skills/signup-flow-cro",
         "./skills/site-architecture",
-        "./skills/social-content"
+        "./skills/social-content",
+        "./skills/video-script-automation"
       ]
     }
   ]

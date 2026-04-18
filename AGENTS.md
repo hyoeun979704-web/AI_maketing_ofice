@@ -252,3 +252,54 @@ Recent commits: !`git log --oneline -5 2>/dev/null`
 ```
 
 **Why this is Claude Code-only**: Other agents that load skills will see the literal `` !`command` `` string rather than executing it, which would appear as garbled instructions. Keep cross-agent skill files free of this syntax.
+
+## 한국어 현지화 가이드
+
+This fork ships a Korean localization layer on top of the upstream project. Agents working on skills in this repo must follow these additional rules. See [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) and [`docs/glossary.ko.md`](docs/glossary.ko.md) for full detail.
+
+### Localization invariants
+
+1. **스킬 디렉터리명과 `name` 필드는 영어 유지** — Agent Skills 스펙상 `name`은 `[a-z0-9-]{1,64}`로 디렉터리명과 일치해야 한다. 따라서 본문만 번역하고 식별자는 건드리지 않는다.
+2. **`description`은 영·한 트리거 병기** — 1024자 한도 안에서 영문 원문 + "Also use when the user says '...한글 트리거...'" 형태로 확장한다. 이래야 "전환율 올려줘"와 "improve conversions" 둘 다 매칭된다.
+3. **`SKILL.en.md` 백업 유지** — 번역 시 원본 SKILL.md를 반드시 `SKILL.en.md`로 복사해둔다. upstream merge 시 기준점이 된다.
+4. **`metadata`에 `ko-version` 추가** — 형식 `ko-version: <upstream>-ko.<iteration>` (예: `1.2.0-ko.1`). 한국어판 자체 변경 시에만 iteration을 올린다.
+5. **코드·테스트·URL은 번역 금지** — `tools/clis/*.js`, `evals/`, CLI 커맨드, URL, 프런트매터 키는 영문 그대로.
+6. **한국 시장 부록은 additive** — 네이버·카카오·쿠팡 관련 추가 가이드는 기존 파일을 고치지 말고 `references/korea-market.md`로 별도 생성한다.
+
+### Required metadata shape (localized skills)
+
+```yaml
+---
+name: page-cro
+description: "When the user wants to optimize ... Also use when the user says '전환율 최적화', '랜딩페이지 개선', 'CRO'. For signup flows, see signup-flow-cro."
+metadata:
+  version: 1.2.0          # upstream, do not change
+  ko-version: 1.2.0-ko.1  # Korean translation iteration
+---
+```
+
+### Validation
+
+- `bash validate-skills.sh` — upstream 스펙 검증 (기존)
+- `bash scripts/validate-ko.sh` — 한국어 레이어 검증 (SKILL.en.md 백업 존재, description에 한글·영문 트리거 공존, ko-version 존재)
+- 두 스크립트 모두 통과해야 PR merge 가능.
+
+### Compliance for Korea-specific skills
+
+한국 시장 특화 스킬(`naver-kin-automation`, `video-script-automation` 등)은 SKILL.md 하단에 `## 컴플라이언스` 섹션을 반드시 포함한다. 대표 규정:
+
+- **지식iN**: 광고성 답변·외부 링크 남발·중복 답변 금지 (신고·계정 정지 사유)
+- **라이브커머스·유료 광고**: 전자상거래법상 「광고」 표기 의무, 식약처·공정위 표시 규정
+- **유료 광고 일반**: 「뒷광고」 방지 가이드라인 — 유료 광고 표기 필수
+- **개인정보**: 개인정보보호법(PIPA) 수집·이용 동의, 정보통신망법 광고성 정보 수신 동의
+
+에이전트가 대본·답변·카피를 생성할 때 이 규정을 자동 반영하도록 스킬 본문에 체크리스트 형태로 명시한다.
+
+### Translation workflow for upstream agents
+
+If you're an agent pulling updates from upstream:
+
+1. `git fetch upstream main` → diff `skills/<name>/SKILL.en.md` against `upstream/main:skills/<name>/SKILL.md`
+2. If upstream changed: apply the same changes to `skills/<name>/SKILL.en.md`, then re-translate the diff into `skills/<name>/SKILL.md`
+3. Bump `ko-version` iteration. If upstream's `version` bumped, reset iteration to `.1` (e.g., `1.2.0-ko.3` → upstream 1.3.0 → `1.3.0-ko.1`).
+4. Run both validators and commit with `i18n(<skill>): sync with upstream <new-version>`

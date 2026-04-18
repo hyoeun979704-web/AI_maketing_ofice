@@ -1,241 +1,243 @@
 ---
 name: product-marketing-context
-description: "When the user wants to create or update their product marketing context document. Also use when the user mentions 'product context,' 'marketing context,' 'set up context,' 'positioning,' 'who is my target audience,' 'describe my product,' 'ICP,' 'ideal customer profile,' or wants to avoid repeating foundational information across marketing tasks. Use this at the start of any new project before using other marketing skills — it creates `.agents/product-marketing-context.md` that all other skills reference for product, audience, and positioning context."
+description: "When the user wants to create or update their product marketing context document. Also use when the user mentions 'product context,' 'marketing context,' 'set up context,' 'positioning,' 'who is my target audience,' 'describe my product,' 'ICP,' 'ideal customer profile,' '프로덕트 컨텍스트', '마케팅 컨텍스트', '포지셔닝', '타겟 오디언스', '이상적 고객 프로필', 'ICP 정리', '제품 소개', '컨텍스트 설정', or wants to avoid repeating foundational information across marketing tasks. Use this at the start of any new project before using other marketing skills — it creates `.agents/product-marketing-context.md` that all other skills reference for product, audience, and positioning context."
 metadata:
   version: 1.1.0
+  ko-version: 1.1.0-ko.1
 ---
 
-# Product Marketing Context
+# 프로덕트 마케팅 컨텍스트
 
-You help users create and maintain a product marketing context document. This captures foundational positioning and messaging information that other marketing skills reference, so users don't repeat themselves.
+당신은 사용자가 프로덕트 마케팅 컨텍스트 문서를 생성·관리하도록 돕는다. 이 문서는 다른 모든 마케팅 스킬이 참조하는 포지셔닝·메시징의 기반 정보를 담아, 사용자가 같은 정보를 반복 입력하지 않게 한다.
 
-The document is stored at `.agents/product-marketing-context.md`.
+문서는 `.agents/product-marketing-context.md`에 저장된다.
 
-## Workflow
+## 워크플로우
 
-### Step 1: Check for Existing Context
+### Step 1: 기존 컨텍스트 확인
 
-First, check if `.agents/product-marketing-context.md` already exists. Also check `.claude/product-marketing-context.md` for older setups — if found there but not in `.agents/`, offer to move it.
+먼저 `.agents/product-marketing-context.md`가 이미 존재하는지 확인한다. 구버전 설정을 위해 `.claude/product-marketing-context.md`도 확인 — `.agents/`에는 없고 `.claude/`에만 있으면 이동을 제안한다.
 
-**If it exists:**
-- Read it and summarize what's captured
-- Ask which sections they want to update
-- Only gather info for those sections
+**존재하는 경우:**
+- 읽고 담긴 내용을 요약해 보여준다
+- 어떤 섹션을 업데이트할지 묻는다
+- 해당 섹션에 필요한 정보만 수집한다
 
-**If it doesn't exist, offer two options:**
+**존재하지 않는 경우, 두 가지 방식 제안:**
 
-1. **Auto-draft from codebase** (recommended): You'll study the repo—README, landing pages, marketing copy, package.json, etc.—and draft a V1 of the context document. The user then reviews, corrects, and fills gaps. This is faster than starting from scratch.
+1. **코드베이스 자동 드래프트** (권장): 저장소(README, 랜딩페이지, 마케팅 카피, 회사 소개 페이지, `package.json` 등)를 분석해 컨텍스트 문서 V1을 에이전트가 작성한다. 사용자는 검토·수정·보완만 한다. 맨바닥부터 시작하는 것보다 훨씬 빠르다.
 
-2. **Start from scratch**: Walk through each section conversationally, gathering info one section at a time.
+2. **처음부터 대화 진행**: 각 섹션을 순차로 대화하며 정보를 수집한다.
 
-Most users prefer option 1. After presenting the draft, ask: "What needs correcting? What's missing?"
+대부분 1번을 선호한다. 드래프트 제시 후 "뭘 고쳐야 하나요? 빠진 건?"을 물어 반복 개선한다.
 
-### Step 2: Gather Information
+### Step 2: 정보 수집
 
-**If auto-drafting:**
-1. Read the codebase: README, landing pages, marketing copy, about pages, meta descriptions, package.json, any existing docs
-2. Draft all sections based on what you find
-3. Present the draft and ask what needs correcting or is missing
-4. Iterate until the user is satisfied
+**자동 드래프트 시:**
+1. 코드베이스 읽기 — README, 랜딩페이지, 마케팅 카피, 회사 소개, 메타 설명, `package.json`, 기존 문서 전반
+2. 찾은 내용으로 모든 섹션을 드래프트
+3. 드래프트 제시 후 수정·누락 확인
+4. 사용자가 만족할 때까지 반복
 
-**If starting from scratch:**
-Walk through each section below conversationally, one at a time. Don't dump all questions at once.
+**처음부터 진행 시:**
+아래 섹션을 한 번에 하나씩 대화형으로 진행한다. 질문을 한꺼번에 쏟아붓지 않는다.
 
-For each section:
-1. Briefly explain what you're capturing
-2. Ask relevant questions
-3. Confirm accuracy
-4. Move to the next
+각 섹션마다:
+1. 무엇을 수집하는지 짧게 설명
+2. 관련 질문
+3. 정확한지 확인
+4. 다음으로 이동
 
-Push for verbatim customer language — exact phrases are more valuable than polished descriptions because they reflect how customers actually think and speak, which makes copy more resonant.
+**고객이 직접 쓰는 표현(verbatim)을 최대한 뽑아낸다.** 다듬어진 설명보다 고객이 실제로 생각·말하는 방식 그대로의 문장이 훨씬 가치 있다 — 이런 날것의 표현이 카피의 공명(resonance)을 만든다.
 
 ---
 
-## Sections to Capture
+## 수집할 섹션
 
-### 1. Product Overview
-- One-line description
-- What it does (2-3 sentences)
-- Product category (what "shelf" you sit on—how customers search for you)
-- Product type (SaaS, marketplace, e-commerce, service, etc.)
-- Business model and pricing
+### 1. 제품 개요
+- 한 줄 설명
+- 무엇을 하는가 (2-3문장)
+- 제품 카테고리 (어떤 "선반"에 위치하는가 — 고객이 어떻게 검색하는가)
+- 제품 유형 (SaaS, 마켓플레이스, 이커머스, 서비스 등)
+- 비즈니스 모델·가격 정책
 
-### 2. Target Audience
-- Target company type (industry, size, stage)
-- Target decision-makers (roles, departments)
-- Primary use case (the main problem you solve)
-- Jobs to be done (2-3 things customers "hire" you for)
-- Specific use cases or scenarios
+### 2. 타겟 오디언스
+- 타겟 기업 유형 (산업·규모·단계)
+- 타겟 의사결정자 (직무·부서)
+- 핵심 사용 사례 (해결하는 주된 문제)
+- Jobs to be Done (고객이 제품을 "고용"하는 2-3가지 이유)
+- 구체적 사용 시나리오
 
-### 3. Personas (B2B only)
-If multiple stakeholders are involved in buying, capture for each:
+### 3. 페르소나 (B2B만 해당)
+여러 이해관계자가 구매에 관여한다면 각각에 대해 기록:
 - User, Champion, Decision Maker, Financial Buyer, Technical Influencer
-- What each cares about, their challenge, and the value you promise them
+- 각자가 신경 쓰는 것, 당면 문제, 당신이 약속하는 가치
 
-### 4. Problems & Pain Points
-- Core challenge customers face before finding you
-- Why current solutions fall short
-- What it costs them (time, money, opportunities)
-- Emotional tension (stress, fear, doubt)
+### 4. 문제·페인 포인트
+- 당신을 찾기 전 고객이 겪는 핵심 문제
+- 왜 현재 솔루션이 부족한가
+- 고객이 치르는 비용 (시간·돈·기회)
+- 정서적 긴장 (스트레스·두려움·의심)
 
-### 5. Competitive Landscape
-- **Direct competitors**: Same solution, same problem (e.g., Calendly vs SavvyCal)
-- **Secondary competitors**: Different solution, same problem (e.g., Calendly vs Superhuman scheduling)
-- **Indirect competitors**: Conflicting approach (e.g., Calendly vs personal assistant)
-- How each falls short for customers
+### 5. 경쟁 구도
+- **직접 경쟁**: 같은 솔루션·같은 문제 (예: Calendly vs SavvyCal)
+- **보조 경쟁**: 다른 솔루션·같은 문제 (예: Calendly vs Superhuman 스케줄링)
+- **간접 경쟁**: 상충되는 접근 (예: Calendly vs 개인 비서)
+- 각각이 고객에게 부족한 점
 
-### 6. Differentiation
-- Key differentiators (capabilities alternatives lack)
-- How you solve it differently
-- Why that's better (benefits)
-- Why customers choose you over alternatives
+### 6. 차별화
+- 핵심 차별점 (대안에 없는 능력)
+- 당신은 어떻게 다르게 해결하는가
+- 왜 그게 더 나은가 (혜택)
+- 왜 고객이 대안 대신 당신을 선택하는가
 
-### 7. Objections & Anti-Personas
-- Top 3 objections heard in sales and how to address them
-- Who is NOT a good fit (anti-persona)
+### 7. 반론·안티 페르소나
+- 세일즈에서 자주 듣는 반론 Top 3와 대응 방법
+- 좋은 핏이 아닌 사람들 (안티 페르소나)
 
-### 8. Switching Dynamics
-The JTBD Four Forces:
-- **Push**: What frustrations drive them away from current solution
-- **Pull**: What attracts them to you
-- **Habit**: What keeps them stuck with current approach
-- **Anxiety**: What worries them about switching
+### 8. 전환 역학 (Switching Dynamics)
+JTBD 4가지 힘:
+- **Push**: 현재 솔루션에서 밀어내는 불만
+- **Pull**: 당신에게 끌어당기는 매력
+- **Habit**: 현재 방식에 머물게 하는 습관
+- **Anxiety**: 전환에 대한 불안
 
-### 9. Customer Language
-- How customers describe the problem (verbatim)
-- How they describe your solution (verbatim)
-- Words/phrases to use
-- Words/phrases to avoid
-- Glossary of product-specific terms
+### 9. 고객 언어
+- 고객이 문제를 묘사하는 방식 (원문 그대로)
+- 고객이 당신의 솔루션을 묘사하는 방식 (원문 그대로)
+- 써야 할 단어·문구
+- 피해야 할 단어·문구
+- 제품 특정 용어 사전
 
-### 10. Brand Voice
-- Tone (professional, casual, playful, etc.)
-- Communication style (direct, conversational, technical)
-- Brand personality (3-5 adjectives)
+### 10. 브랜드 보이스
+- 톤 (전문·캐주얼·유쾌 등)
+- 커뮤니케이션 스타일 (직접적·대화형·기술적)
+- 브랜드 성격 (형용사 3-5개)
 
-### 11. Proof Points
-- Key metrics or results to cite
-- Notable customers/logos
-- Testimonial snippets
-- Main value themes and supporting evidence
+### 11. 증빙
+- 인용할 핵심 지표·결과
+- 대표 고객·로고
+- 고객 후기 스니펫
+- 주요 가치 테마와 뒷받침 근거
 
-### 12. Goals
-- Primary business goal
-- Key conversion action (what you want people to do)
-- Current metrics (if known)
+### 12. 목표
+- 주된 비즈니스 목표
+- 핵심 전환 행동 (고객이 하길 원하는 것)
+- 현재 지표 (있다면)
 
 ---
 
-## Step 3: Create the Document
+## Step 3: 문서 생성
 
-After gathering information, create `.agents/product-marketing-context.md` with this structure:
+정보 수집 후 `.agents/product-marketing-context.md`를 다음 구조로 작성한다.
 
 ```markdown
-# Product Marketing Context
+# 프로덕트 마케팅 컨텍스트
 
-*Last updated: [date]*
+*마지막 업데이트: [날짜]*
 
-## Product Overview
-**One-liner:**
-**What it does:**
-**Product category:**
-**Product type:**
-**Business model:**
+## 제품 개요
+**한 줄 설명:**
+**무엇을 하는가:**
+**제품 카테고리:**
+**제품 유형:**
+**비즈니스 모델:**
 
-## Target Audience
-**Target companies:**
-**Decision-makers:**
-**Primary use case:**
-**Jobs to be done:**
+## 타겟 오디언스
+**타겟 기업:**
+**의사결정자:**
+**핵심 사용 사례:**
+**Jobs to be Done:**
 -
-**Use cases:**
+**사용 시나리오:**
 -
 
-## Personas
-| Persona | Cares about | Challenge | Value we promise |
-|---------|-------------|-----------|------------------|
+## 페르소나
+| 페르소나 | 관심사 | 문제 | 약속하는 가치 |
+|----------|--------|------|----------------|
 | | | | |
 
-## Problems & Pain Points
-**Core problem:**
-**Why alternatives fall short:**
+## 문제·페인 포인트
+**핵심 문제:**
+**대안이 부족한 이유:**
 -
-**What it costs them:**
-**Emotional tension:**
+**고객이 치르는 비용:**
+**정서적 긴장:**
 
-## Competitive Landscape
-**Direct:** [Competitor] — falls short because...
-**Secondary:** [Approach] — falls short because...
-**Indirect:** [Alternative] — falls short because...
+## 경쟁 구도
+**직접:** [경쟁사] — 부족한 이유...
+**보조:** [접근] — 부족한 이유...
+**간접:** [대안] — 부족한 이유...
 
-## Differentiation
-**Key differentiators:**
+## 차별화
+**핵심 차별점:**
 -
-**How we do it differently:**
-**Why that's better:**
-**Why customers choose us:**
+**다르게 해결하는 방식:**
+**그게 더 나은 이유:**
+**고객이 우리를 선택하는 이유:**
 
-## Objections
-| Objection | Response |
-|-----------|----------|
+## 반론
+| 반론 | 대응 |
+|-------|------|
 | | |
 
-**Anti-persona:**
+**안티 페르소나:**
 
-## Switching Dynamics
+## 전환 역학
 **Push:**
 **Pull:**
 **Habit:**
 **Anxiety:**
 
-## Customer Language
-**How they describe the problem:**
-- "[verbatim]"
-**How they describe us:**
-- "[verbatim]"
-**Words to use:**
-**Words to avoid:**
-**Glossary:**
-| Term | Meaning |
-|------|---------|
+## 고객 언어
+**문제를 묘사하는 방식:**
+- "[원문 그대로]"
+**우리를 묘사하는 방식:**
+- "[원문 그대로]"
+**쓸 단어:**
+**피할 단어:**
+**용어 사전:**
+| 용어 | 의미 |
+|------|------|
 | | |
 
-## Brand Voice
-**Tone:**
-**Style:**
-**Personality:**
+## 브랜드 보이스
+**톤:**
+**스타일:**
+**성격:**
 
-## Proof Points
-**Metrics:**
-**Customers:**
-**Testimonials:**
-> "[quote]" — [who]
-**Value themes:**
-| Theme | Proof |
-|-------|-------|
+## 증빙
+**지표:**
+**고객:**
+**후기:**
+> "[인용]" — [누구]
+**가치 테마:**
+| 테마 | 근거 |
+|-------|------|
 | | |
 
-## Goals
-**Business goal:**
-**Conversion action:**
-**Current metrics:**
+## 목표
+**비즈니스 목표:**
+**전환 행동:**
+**현재 지표:**
 ```
 
 ---
 
-## Step 4: Confirm and Save
+## Step 4: 확인·저장
 
-- Show the completed document
-- Ask if anything needs adjustment
-- Save to `.agents/product-marketing-context.md`
-- Tell them: "Other marketing skills will now use this context automatically. Run `/product-marketing-context` anytime to update it."
+- 완성된 문서를 보여준다
+- 조정할 부분이 있는지 묻는다
+- `.agents/product-marketing-context.md`에 저장
+- 알린다: "이제 다른 마케팅 스킬들이 이 컨텍스트를 자동으로 참조합니다. 업데이트가 필요하면 언제든 `/product-marketing-context`를 실행하세요."
 
 ---
 
 ## Tips
 
-- **Be specific**: Ask "What's the #1 frustration that brings them to you?" not "What problem do they solve?"
-- **Capture exact words**: Customer language beats polished descriptions
-- **Ask for examples**: "Can you give me an example?" unlocks better answers
-- **Validate as you go**: Summarize each section and confirm before moving on
-- **Skip what doesn't apply**: Not every product needs all sections (e.g., Personas for B2C)
+- **구체적으로 물어라**: "어떤 문제를 해결하나요?"보다 "당신을 찾게 만드는 가장 큰 불만은 뭔가요?"
+- **정확한 단어를 포착하라**: 고객 언어가 다듬은 설명을 이긴다
+- **예시를 요구하라**: "예를 들어주실 수 있나요?"가 더 나은 답을 끌어낸다
+- **진행하면서 검증하라**: 섹션마다 요약하고 다음으로 넘어가기 전에 확인
+- **해당 없는 건 건너뛰라**: 모든 제품에 모든 섹션이 필요한 건 아니다 (예: B2C에 페르소나 다층 구조 불필요)
+- **한국 B2B 문맥**: 한국 B2B는 최종 의사결정에 임원급·재무부서·IT부서 다수가 개입하는 경우가 많다. Decision Maker와 Financial Buyer를 꼭 분리해 캡처.
