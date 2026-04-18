@@ -1,0 +1,557 @@
+{
+  "departments": {
+    "cro": {
+      "label": "전환율 최적화",
+      "icon": "🎯",
+      "color": "#4C8BF5",
+      "skills": [
+        "page-cro",
+        "signup-flow-cro",
+        "onboarding-cro",
+        "form-cro",
+        "popup-cro",
+        "paywall-upgrade-cro"
+      ]
+    },
+    "content": {
+      "label": "콘텐츠·카피",
+      "icon": "✍️",
+      "color": "#A855F7",
+      "skills": [
+        "copywriting",
+        "copy-editing",
+        "cold-email",
+        "email-sequence",
+        "social-content"
+      ]
+    },
+    "seo": {
+      "label": "SEO·발견",
+      "icon": "🔍",
+      "color": "#10B981",
+      "skills": [
+        "seo-audit",
+        "ai-seo",
+        "programmatic-seo",
+        "site-architecture",
+        "competitor-alternatives",
+        "schema-markup",
+        "content-strategy"
+      ]
+    },
+    "paid": {
+      "label": "유료·광고·측정",
+      "icon": "💰",
+      "color": "#F59E0B",
+      "skills": [
+        "paid-ads",
+        "ad-creative",
+        "ab-test-setup",
+        "analytics-tracking"
+      ]
+    },
+    "growth": {
+      "label": "그로스·리텐션",
+      "icon": "📈",
+      "color": "#EF4444",
+      "skills": [
+        "referral-program",
+        "free-tool-strategy",
+        "churn-prevention",
+        "lead-magnets",
+        "community-marketing"
+      ]
+    },
+    "sales": {
+      "label": "세일즈·GTM",
+      "icon": "🤝",
+      "color": "#14B8A6",
+      "skills": [
+        "revops",
+        "sales-enablement",
+        "launch-strategy",
+        "pricing-strategy"
+      ]
+    },
+    "strategy": {
+      "label": "전략·리서치",
+      "icon": "🧠",
+      "color": "#6366F1",
+      "skills": [
+        "marketing-ideas",
+        "marketing-psychology",
+        "customer-research",
+        "aso-audit",
+        "product-marketing-context"
+      ]
+    },
+    "korea": {
+      "label": "한국 특화",
+      "icon": "🇰🇷",
+      "color": "#DC2626",
+      "skills": [
+        "naver-kin-automation",
+        "video-script-automation"
+      ]
+    }
+  },
+  "skills": [
+    {
+      "name": "ab-test-setup",
+      "displayName": "A/B 테스트 설계자",
+      "emoji": "🧪",
+      "department": "paid",
+      "description": "When the user wants to plan, design, or implement an A/B test or experiment, or build a growth experimentation program. Also use when the user mentions \"A/B test,\" \"split test,\" \"experiment,\" \"test this change,\" \"variant copy,\" \"multivariate test,\" \"hypothesis,\" \"should I test this,\" \"which version is better,\" \"test two versions,\" \"statistical significance,\" \"how long should I run this test,\" \"growth experiments,\" \"experiment velocity,\" \"experiment backlog,\" \"ICE score,\" \"experimentation program,\" or \"experiment playbook.\" Use this whenever someone is comparing two approaches and wants to measure which performs better, or when they want to build a systematic experimentation practice. For tracking implementation, see analytics-tracking. For page-level conversion optimization, see page-cro.",
+      "role": "You are an expert in experimentation and A/B testing. Your goal is to help design tests that produce statistically valid, actionable results.",
+      "version": "1.2.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "ad-creative",
+      "displayName": "광고 크리에이티브 제작자",
+      "emoji": "🎨",
+      "department": "paid",
+      "description": "When the user wants to generate, iterate, or scale ad creative — headlines, descriptions, primary text, or full ad variations — for any paid advertising platform. Also use when the user mentions 'ad copy variations,' 'ad creative,' 'generate headlines,' 'RSA headlines,' 'bulk ad copy,' 'ad iterations,' 'creative testing,' 'ad performance optimization,' 'write me some ads,' 'Facebook ad copy,' 'Google ad headlines,' 'LinkedIn ad text,' or 'I need more ad variations.' Use this whenever someone needs to produce ad copy at scale or iterate on existing ads. For campaign strategy and targeting, see paid-ads. For landing page copy, see copywriting.",
+      "role": "You are an expert performance creative strategist. Your goal is to generate high-performing ad creative at scale — headlines, descriptions, and primary text that drive clicks and conversions — and iterate based on real performance data.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "ai-seo",
+      "displayName": "AI 검색 최적화 담당",
+      "emoji": "🤖",
+      "department": "seo",
+      "description": "When the user wants to optimize content for AI search engines, get cited by LLMs, or appear in AI-generated answers. Also use when the user mentions 'AI SEO,' 'AEO,' 'GEO,' 'LLMO,' 'answer engine optimization,' 'generative engine optimization,' 'LLM optimization,' 'AI Overviews,' 'optimize for ChatGPT,' 'optimize for Perplexity,' 'AI citations,' 'AI visibility,' 'zero-click search,' 'how do I show up in AI answers,' 'LLM mentions,' or 'optimize for Claude/Gemini.' Use this whenever someone wants their content to be cited or surfaced by AI assistants and AI search engines. For traditional technical and on-page SEO audits, see seo-audit. For structured data implementation, see schema-markup.",
+      "role": "You are an expert in AI search optimization — the practice of making content discoverable, extractable, and citable by AI systems including Google AI Overviews, ChatGPT, Perplexity, Claude, Gemini, and Copilot. Your goal is to help users get their content cited as a source in AI-generated answers.",
+      "version": "1.2.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "analytics-tracking",
+      "displayName": "애널리틱스 트래킹 엔지니어",
+      "emoji": "📊",
+      "department": "paid",
+      "description": "When the user wants to set up, improve, or audit analytics tracking and measurement. Also use when the user mentions \"set up tracking,\" \"GA4,\" \"Google Analytics,\" \"conversion tracking,\" \"event tracking,\" \"UTM parameters,\" \"tag manager,\" \"GTM,\" \"analytics implementation,\" \"tracking plan,\" \"how do I measure this,\" \"track conversions,\" \"attribution,\" \"Mixpanel,\" \"Segment,\" \"are my events firing,\" or \"analytics isn't working.\" Use this whenever someone asks how to know if something is working or wants to measure marketing results. For A/B test measurement, see ab-test-setup.",
+      "role": "You are an expert in analytics implementation and measurement. Your goal is to help set up tracking that provides actionable insights for marketing and product decisions.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "aso-audit",
+      "displayName": "ASO 감사관",
+      "emoji": "📱",
+      "department": "strategy",
+      "description": "When the user wants to audit or optimize an App Store or Google Play listing. Also use when the user mentions 'ASO audit,' 'app store optimization,' 'optimize my app listing,' 'improve app visibility,' 'app store ranking,' 'audit my listing,' 'why aren't people downloading my app,' 'improve my app conversion,' 'keyword optimization for app,' or 'compare my app to competitors.' Use when the user shares an App Store or Google Play URL and wants to improve it.",
+      "role": "Analyze App Store and Google Play listings against ASO best practices. Fetches live listing data, scores metadata, visuals, and ratings, then produces a prioritized action plan.",
+      "version": "1.0.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "churn-prevention",
+      "displayName": "이탈 방지 스페셜리스트",
+      "emoji": "🛟",
+      "department": "growth",
+      "description": "When the user wants to reduce churn, build cancellation flows, set up save offers, recover failed payments, or implement retention strategies. Also use when the user mentions 'churn,' 'cancel flow,' 'offboarding,' 'save offer,' 'dunning,' 'failed payment recovery,' 'win-back,' 'retention,' 'exit survey,' 'pause subscription,' 'involuntary churn,' 'people keep canceling,' 'churn rate is too high,' 'how do I keep users,' or 'customers are leaving.' Use this whenever someone is losing subscribers or wants to build systems to prevent it. For post-cancel win-back email sequences, see email-sequence. For in-app upgrade paywalls, see paywall-upgrade-cro.",
+      "role": "You are an expert in SaaS retention and churn prevention. Your goal is to help reduce both voluntary churn (customers choosing to cancel) and involuntary churn (failed payments) through well-designed cancel flows, dynamic save offers, proactive retention, and dunning strategies.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "cold-email",
+      "displayName": "콜드 이메일 카피라이터",
+      "emoji": "📧",
+      "department": "content",
+      "description": "Write B2B cold emails and follow-up sequences that get replies. Use when the user wants to write cold outreach emails, prospecting emails, cold email campaigns, sales development emails, or SDR emails. Also use when the user mentions \"cold outreach,\" \"prospecting email,\" \"outbound email,\" \"email to leads,\" \"reach out to prospects,\" \"sales email,\" \"follow-up email sequence,\" \"nobody's replying to my emails,\" or \"how do I write a cold email.\" Covers subject lines, opening lines, body copy, CTAs, personalization, and multi-touch follow-up sequences. For warm/lifecycle email sequences, see email-sequence. For sales collateral beyond emails, see sales-enablement.",
+      "role": "You are an expert cold email writer. Your goal is to write emails that sound like they came from a sharp, thoughtful human — not a sales machine following a template.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "community-marketing",
+      "displayName": "커뮤니티 매니저",
+      "emoji": "👥",
+      "department": "growth",
+      "description": "Build and leverage online communities to drive product growth and brand loyalty. Use when the user wants to create a community strategy, grow a Discord or Slack community, manage a forum or subreddit, build brand advocates, increase word-of-mouth, drive community-led growth, engage users post-signup, or turn customers into evangelists. Trigger phrases: \"build a community,\" \"community strategy,\" \"Discord community,\" \"Slack community,\" \"community-led growth,\" \"brand advocates,\" \"user community,\" \"forum strategy,\" \"community engagement,\" \"grow our community,\" \"ambassador program,\" \"community flywheel.\"",
+      "role": "You are an expert community builder and community-led growth strategist. Your goal is to help the user design, launch, and grow a community that creates genuine value for members while driving measurable business outcomes.",
+      "version": "1.0.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "competitor-alternatives",
+      "displayName": "경쟁사 대안 페이지 작성자",
+      "emoji": "⚖️",
+      "department": "seo",
+      "description": "When the user wants to create competitor comparison or alternative pages for SEO and sales enablement. Also use when the user mentions 'alternative page,' 'vs page,' 'competitor comparison,' 'comparison page,' '[Product] vs [Product],' '[Product] alternative,' 'competitive landing pages,' 'how do we compare to X,' 'battle card,' or 'competitor teardown.' Use this for any content that positions your product against competitors. Covers four formats: singular alternative, plural alternatives, you vs competitor, and competitor vs competitor. For sales-specific competitor docs, see sales-enablement.",
+      "role": "You are an expert in creating competitor comparison and alternative pages. Your goal is to build pages that rank for competitive search terms, provide genuine value to evaluators, and position your product effectively.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "content-strategy",
+      "displayName": "콘텐츠 전략가",
+      "emoji": "🗺️",
+      "department": "seo",
+      "description": "When the user wants to plan a content strategy, decide what content to create, or figure out what topics to cover. Also use when the user mentions \"content strategy,\" \"what should I write about,\" \"content ideas,\" \"blog strategy,\" \"topic clusters,\" \"content planning,\" \"editorial calendar,\" \"content marketing,\" \"content roadmap,\" \"what content should I create,\" \"blog topics,\" \"content pillars,\" or \"I don't know what to write.\" Use this whenever someone needs help deciding what content to produce, not just writing it. For writing individual pieces, see copywriting. For SEO-specific audits, see seo-audit. For social media content specifically, see social-content.",
+      "role": "You are a content strategist. Your goal is to help plan content that drives traffic, builds authority, and generates leads by being either searchable, shareable, or both.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "copy-editing",
+      "displayName": "카피 편집자",
+      "emoji": "📝",
+      "department": "content",
+      "description": "When the user wants to edit, review, or improve existing marketing copy, or refresh outdated content. Also use when the user mentions 'edit this copy,' 'review my copy,' 'copy feedback,' 'proofread,' 'polish this,' 'make this better,' 'copy sweep,' 'tighten this up,' 'this reads awkwardly,' 'clean up this text,' 'too wordy,' 'sharpen the messaging,' 'refresh this content,' 'update this page,' 'this content is outdated,' or 'content audit.' Use this when the user already has copy and wants it improved or refreshed rather than rewritten from scratch. For writing new copy, see copywriting.",
+      "role": "You are an expert copy editor specializing in marketing and conversion copy. Your goal is to systematically improve existing copy through focused editing passes while preserving the core message.",
+      "version": "1.3.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "copywriting",
+      "displayName": "카피라이터",
+      "emoji": "✒️",
+      "department": "content",
+      "description": "When the user wants to write, rewrite, or improve marketing copy for any page — including homepage, landing pages, pricing pages, feature pages, about pages, or product pages. Also use when the user says \"write copy for,\" \"improve this copy,\" \"rewrite this page,\" \"marketing copy,\" \"headline help,\" \"CTA copy,\" \"value proposition,\" \"tagline,\" \"subheadline,\" \"hero section copy,\" \"above the fold,\" \"this copy is weak,\" \"make this more compelling,\" or \"help me describe my product.\" Use this whenever someone is working on website text that needs to persuade or convert. For email copy, see email-sequence. For popup copy, see popup-cro. For editing existing copy, see copy-editing.",
+      "role": "You are an expert conversion copywriter. Your goal is to write marketing copy that is clear, compelling, and drives action.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "customer-research",
+      "displayName": "고객 리서처",
+      "emoji": "🔬",
+      "department": "strategy",
+      "description": "When the user wants to conduct, analyze, or synthesize customer research. Use when the user mentions \"customer research,\" \"ICP research,\" \"talk to customers,\" \"analyze transcripts,\" \"customer interviews,\" \"survey analysis,\" \"support ticket analysis,\" \"voice of customer,\" \"VOC,\" \"build personas,\" \"customer personas,\" \"jobs to be done,\" \"JTBD,\" \"what do customers say,\" \"what are customers struggling with,\" \"Reddit mining,\" \"G2 reviews,\" \"review mining,\" \"digital watering holes,\" \"community research,\" \"forum research,\" \"competitor reviews,\" \"customer sentiment,\" or \"find out why customers churn/convert/buy.\" Use for both analyzing existing research assets AND gathering new research from online sources. For writing copy informed by research, see copywriting. For acting on research to improve pages, see page-cro.",
+      "role": "You are an expert customer researcher. Your goal is to help uncover what customers actually think, feel, say, and struggle with — so that everything from positioning to product to copy is grounded in reality rather than assumption.",
+      "version": "1.0.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "email-sequence",
+      "displayName": "이메일 시퀀스 담당자",
+      "emoji": "📬",
+      "department": "content",
+      "description": "When the user wants to create or optimize an email sequence, drip campaign, automated email flow, or lifecycle email program. Also use when the user mentions \"email sequence,\" \"drip campaign,\" \"nurture sequence,\" \"onboarding emails,\" \"welcome sequence,\" \"re-engagement emails,\" \"email automation,\" \"lifecycle emails,\" \"trigger-based emails,\" \"email funnel,\" \"email workflow,\" \"what emails should I send,\" \"welcome series,\" or \"email cadence.\" Use this for any multi-email automated flow. For cold outreach emails, see cold-email. For in-app onboarding, see onboarding-cro.",
+      "role": "You are an expert in email marketing and automation. Your goal is to create email sequences that nurture relationships, drive action, and move people toward conversion.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "form-cro",
+      "displayName": "폼 CRO 스페셜리스트",
+      "emoji": "📋",
+      "department": "cro",
+      "description": "When the user wants to optimize any form that is NOT signup/registration — including lead capture forms, contact forms, demo request forms, application forms, survey forms, or checkout forms. Also use when the user mentions \"form optimization,\" \"lead form conversions,\" \"form friction,\" \"form fields,\" \"form completion rate,\" \"contact form,\" \"nobody fills out our form,\" \"form abandonment,\" \"too many fields,\" \"demo request form,\" or \"lead form isn't converting.\" Use this for any non-signup form that captures information. For signup/registration forms, see signup-flow-cro. For popups containing forms, see popup-cro.",
+      "role": "You are an expert in form optimization. Your goal is to maximize form completion rates while capturing the data that matters.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "free-tool-strategy",
+      "displayName": "프리 툴 전략가",
+      "emoji": "🛠️",
+      "department": "growth",
+      "description": "When the user wants to plan, evaluate, or build a free tool for marketing purposes — lead generation, SEO value, or brand awareness. Also use when the user mentions \"engineering as marketing,\" \"free tool,\" \"marketing tool,\" \"calculator,\" \"generator,\" \"interactive tool,\" \"lead gen tool,\" \"build a tool for leads,\" \"free resource,\" \"ROI calculator,\" \"grader tool,\" \"audit tool,\" \"should I build a free tool,\" or \"tools for lead gen.\" Use this whenever someone wants to build something useful and give it away to attract leads or earn links. For downloadable content lead magnets (ebooks, checklists, templates), see lead-magnets.",
+      "role": "You are an expert in engineering-as-marketing strategy. Your goal is to help plan and evaluate free tools that generate leads, attract organic traffic, and build brand awareness.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "launch-strategy",
+      "displayName": "런칭 전략가",
+      "emoji": "🚀",
+      "department": "sales",
+      "description": "When the user wants to plan a product launch, feature announcement, or release strategy. Also use when the user mentions 'launch,' 'Product Hunt,' 'feature release,' 'announcement,' 'go-to-market,' 'beta launch,' 'early access,' 'waitlist,' 'product update,' 'how do I launch this,' 'launch checklist,' 'GTM plan,' or 'we're about to ship.' Use this whenever someone is preparing to release something publicly. For ongoing marketing after launch, see marketing-ideas.",
+      "role": "You are an expert in SaaS product launches and feature announcements. Your goal is to help users plan launches that build momentum, capture attention, and convert interest into users.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "lead-magnets",
+      "displayName": "리드 매그넷 기획자",
+      "emoji": "🧲",
+      "department": "growth",
+      "description": "When the user wants to create, plan, or optimize a lead magnet for email capture or lead generation. Also use when the user mentions \"lead magnet,\" \"gated content,\" \"content upgrade,\" \"downloadable,\" \"ebook,\" \"cheat sheet,\" \"checklist,\" \"template download,\" \"opt-in,\" \"freebie,\" \"PDF download,\" \"resource library,\" \"content offer,\" \"email capture content,\" \"Notion template,\" \"spreadsheet template,\" or \"what should I give away for emails.\" Use this for planning what to create and how to distribute it. For interactive tools as lead magnets, see free-tool-strategy. For writing the actual content, see copywriting. For the email sequence after capture, see email-sequence.",
+      "role": "You are an expert in lead magnet strategy. Your goal is to help plan lead magnets that capture emails, generate qualified leads, and naturally lead to product adoption.",
+      "version": "1.0.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "marketing-ideas",
+      "displayName": "마케팅 아이디어 제공자",
+      "emoji": "💡",
+      "department": "strategy",
+      "description": "When the user needs marketing ideas, inspiration, or strategies for their SaaS or software product. Also use when the user asks for 'marketing ideas,' 'growth ideas,' 'how to market,' 'marketing strategies,' 'marketing tactics,' 'ways to promote,' 'ideas to grow,' 'what else can I try,' 'I don't know how to market this,' 'brainstorm marketing,' or 'what marketing should I do.' Use this as a starting point whenever someone is stuck or looking for inspiration on how to grow. For specific channel execution, see the relevant skill (paid-ads, social-content, email-sequence, etc.).",
+      "role": "You are a marketing strategist with a library of 139 proven marketing ideas. Your goal is to help users find the right marketing strategies for their specific situation, stage, and resources.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "marketing-psychology",
+      "displayName": "마케팅 심리학자",
+      "emoji": "🧠",
+      "department": "strategy",
+      "description": "When the user wants to apply psychological principles, mental models, or behavioral science to marketing. Also use when the user mentions 'psychology,' 'mental models,' 'cognitive bias,' 'persuasion,' 'behavioral science,' 'why people buy,' 'decision-making,' 'consumer behavior,' 'anchoring,' 'social proof,' 'scarcity,' 'loss aversion,' 'framing,' or 'nudge.' Use this whenever someone wants to understand or leverage how people think and make decisions in a marketing context.",
+      "role": "You are an expert in applying psychological principles and mental models to marketing. Your goal is to help users understand why people buy, how to influence behavior ethically, and how to make better marketing decisions.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "naver-kin-automation",
+      "displayName": "지식iN 모니터링 팀장",
+      "emoji": "💬",
+      "department": "korea",
+      "description": "When the user wants to monitor Naver KiN (Naver's Q&A platform) for questions related to their industry, detect competitor or self brand mentions, or plan a presence strategy that stays within Naver's operating policy. Also use when the user says '지식인', '지식iN', '지식인 자동화', '지식인 모니터링', '네이버 지식인에서 우리 브랜드 언급 찾아줘', '지식인 답변 기회', '지식인 마케팅'. This skill explicitly EXCLUDES automated answer posting and direct brand-name insertion into answer bodies, both of which trigger Naver's anti-promotion enforcement. For general Korean SEO, see seo-audit. For content repurposing of Q&A into FAQ pages, see ai-seo. For community engagement on 카페·커뮤니티, see community-marketing.",
+      "role": "당신은 네이버 지식iN 마케팅 전문가다. 지식iN에서 타겟 키워드 관련 질문을 모니터링하고, 자사·경쟁사 브랜드 언급을 탐지하며, 네이버 운영정책을 준수하는 노출 전략을 기획한다.",
+      "version": "1.0.0",
+      "koVersion": "1.0.0-ko.1",
+      "koOnly": true,
+      "localized": true
+    },
+    {
+      "name": "onboarding-cro",
+      "displayName": "온보딩 CRO 담당자",
+      "emoji": "👋",
+      "department": "cro",
+      "description": "When the user wants to optimize post-signup onboarding, user activation, first-run experience, or time-to-value. Also use when the user mentions \"onboarding flow,\" \"activation rate,\" \"user activation,\" \"first-run experience,\" \"empty states,\" \"onboarding checklist,\" \"aha moment,\" \"new user experience,\" \"users aren't activating,\" \"nobody completes setup,\" \"low activation rate,\" \"users sign up but don't use the product,\" \"time to value,\" or \"first session experience.\" Use this whenever users are signing up but not sticking around. For signup/registration optimization, see signup-flow-cro. For ongoing email sequences, see email-sequence.",
+      "role": "You are an expert in user onboarding and activation. Your goal is to help users reach their \"aha moment\" as quickly as possible and establish habits that lead to long-term retention.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "page-cro",
+      "displayName": "페이지 CRO 스페셜리스트",
+      "emoji": "📄",
+      "department": "cro",
+      "description": "When the user wants to optimize, improve, or increase conversions on any marketing page — including homepage, landing pages, pricing pages, feature pages, or blog posts. Also use when the user says \"CRO,\" \"conversion rate optimization,\" \"this page isn't converting,\" \"improve conversions,\" \"why isn't this page working,\" \"my landing page sucks,\" \"nobody's converting,\" \"low conversion rate,\" \"bounce rate is too high,\" \"people leave without signing up,\" or \"this page needs work.\" Use this even if the user just shares a URL and asks for feedback — they probably want conversion help. For signup/registration flows, see signup-flow-cro. For post-signup activation, see onboarding-cro. For forms outside of signup, see form-cro. For popups/modals, see popup-cro.",
+      "role": "You are a conversion rate optimization expert. Your goal is to analyze marketing pages and provide actionable recommendations to improve conversion rates.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "paid-ads",
+      "displayName": "유료 광고 매니저",
+      "emoji": "💸",
+      "department": "paid",
+      "description": "When the user wants help with paid advertising campaigns on Google Ads, Meta (Facebook/Instagram), LinkedIn, Twitter/X, or other ad platforms. Also use when the user mentions 'PPC,' 'paid media,' 'ROAS,' 'CPA,' 'ad campaign,' 'retargeting,' 'audience targeting,' 'Google Ads,' 'Facebook ads,' 'LinkedIn ads,' 'ad budget,' 'cost per click,' 'ad spend,' or 'should I run ads.' Use this for campaign strategy, audience targeting, bidding, and optimization. For bulk ad creative generation and iteration, see ad-creative. For landing page optimization, see page-cro.",
+      "role": "You are an expert performance marketer with direct access to ad platform accounts. Your goal is to help create, optimize, and scale paid advertising campaigns that drive efficient customer acquisition.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "paywall-upgrade-cro",
+      "displayName": "페이월 CRO 담당자",
+      "emoji": "💳",
+      "department": "cro",
+      "description": "When the user wants to create or optimize in-app paywalls, upgrade screens, upsell modals, or feature gates. Also use when the user mentions \"paywall,\" \"upgrade screen,\" \"upgrade modal,\" \"upsell,\" \"feature gate,\" \"convert free to paid,\" \"freemium conversion,\" \"trial expiration screen,\" \"limit reached screen,\" \"plan upgrade prompt,\" \"in-app pricing,\" \"free users won't upgrade,\" \"trial to paid conversion,\" or \"how do I get users to pay.\" Use this for any in-product moment where you're asking users to upgrade. Distinct from public pricing pages (see page-cro) — this focuses on in-product upgrade moments where the user has already experienced value. For pricing decisions, see pricing-strategy.",
+      "role": "You are an expert in in-app paywalls and upgrade flows. Your goal is to convert free users to paid, or upgrade users to higher tiers, at moments when they've experienced enough value to justify the commitment.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "popup-cro",
+      "displayName": "팝업 CRO 담당자",
+      "emoji": "🪟",
+      "department": "cro",
+      "description": "When the user wants to create or optimize popups, modals, overlays, slide-ins, or banners for conversion purposes. Also use when the user mentions \"exit intent,\" \"popup conversions,\" \"modal optimization,\" \"lead capture popup,\" \"email popup,\" \"announcement banner,\" \"overlay,\" \"collect emails with a popup,\" \"exit popup,\" \"scroll trigger,\" \"sticky bar,\" or \"notification bar.\" Use this for any overlay or interrupt-style conversion element. For forms outside of popups, see form-cro. For general page conversion optimization, see page-cro.",
+      "role": "You are an expert in popup and modal optimization. Your goal is to create popups that convert without annoying users or damaging brand perception.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "pricing-strategy",
+      "displayName": "가격 전략가",
+      "emoji": "🏷️",
+      "department": "sales",
+      "description": "When the user wants help with pricing decisions, packaging, or monetization strategy. Also use when the user mentions 'pricing,' 'pricing tiers,' 'freemium,' 'free trial,' 'packaging,' 'price increase,' 'value metric,' 'Van Westendorp,' 'willingness to pay,' 'monetization,' 'how much should I charge,' 'my pricing is wrong,' 'pricing page,' 'annual vs monthly,' 'per seat pricing,' or 'should I offer a free plan.' Use this whenever someone is figuring out what to charge or how to structure their plans. For in-app upgrade screens, see paywall-upgrade-cro.",
+      "role": "You are an expert in SaaS pricing and monetization strategy. Your goal is to help design pricing that captures value, drives growth, and aligns with customer willingness to pay.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "product-marketing-context",
+      "displayName": "프로덕트 마케팅 컨텍스트 매니저 (기반)",
+      "emoji": "🏛️",
+      "department": "strategy",
+      "description": "When the user wants to create or update their product marketing context document. Also use when the user mentions 'product context,' 'marketing context,' 'set up context,' 'positioning,' 'who is my target audience,' 'describe my product,' 'ICP,' 'ideal customer profile,' '프로덕트 컨텍스트', '마케팅 컨텍스트', '포지셔닝', '타겟 오디언스', '이상적 고객 프로필', 'ICP 정리', '제품 소개', '컨텍스트 설정', or wants to avoid repeating foundational information across marketing tasks. Use this at the start of any new project before using other marketing skills — it creates `.agents/product-marketing-context.md` that all other skills reference for product, audience, and positioning context.",
+      "role": "당신은 사용자가 프로덕트 마케팅 컨텍스트 문서를 생성·관리하도록 돕는다. 이 문서는 다른 모든 마케팅 스킬이 참조하는 포지셔닝·메시징의 기반 정보를 담아, 사용자가 같은 정보를 반복 입력하지 않게 한다.",
+      "version": "1.1.0",
+      "koVersion": "1.1.0-ko.1",
+      "koOnly": false,
+      "localized": true
+    },
+    {
+      "name": "programmatic-seo",
+      "displayName": "프로그래매틱 SEO 엔지니어",
+      "emoji": "⚙️",
+      "department": "seo",
+      "description": "When the user wants to create SEO-driven pages at scale using templates and data. Also use when the user mentions \"programmatic SEO,\" \"template pages,\" \"pages at scale,\" \"directory pages,\" \"location pages,\" \"[keyword] + [city] pages,\" \"comparison pages,\" \"integration pages,\" \"building many pages for SEO,\" \"pSEO,\" \"generate 100 pages,\" \"data-driven pages,\" or \"templated landing pages.\" Use this whenever someone wants to create many similar pages targeting different keywords or locations. For auditing existing SEO issues, see seo-audit. For content strategy planning, see content-strategy.",
+      "role": "You are an expert in programmatic SEO—building SEO-optimized pages at scale using templates and data. Your goal is to create pages that rank, provide value, and avoid thin content penalties.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "referral-program",
+      "displayName": "레퍼럴 프로그램 매니저",
+      "emoji": "🔗",
+      "department": "growth",
+      "description": "When the user wants to create, optimize, or analyze a referral program, affiliate program, or word-of-mouth strategy. Also use when the user mentions 'referral,' 'affiliate,' 'ambassador,' 'word of mouth,' 'viral loop,' 'refer a friend,' 'partner program,' 'referral incentive,' 'how to get referrals,' 'customers referring customers,' or 'affiliate payout.' Use this whenever someone wants existing users or partners to bring in new customers. For launch-specific virality, see launch-strategy.",
+      "role": "You are an expert in viral growth and referral marketing. Your goal is to help design and optimize programs that turn customers into growth engines.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "revops",
+      "displayName": "RevOps 운영자",
+      "emoji": "📈",
+      "department": "sales",
+      "description": "When the user wants help with revenue operations, lead lifecycle management, or marketing-to-sales handoff processes. Also use when the user mentions 'RevOps,' 'revenue operations,' 'lead scoring,' 'lead routing,' 'MQL,' 'SQL,' 'pipeline stages,' 'deal desk,' 'CRM automation,' 'marketing-to-sales handoff,' 'data hygiene,' 'leads aren't getting to sales,' 'pipeline management,' 'lead qualification,' or 'when should marketing hand off to sales.' Use this for anything involving the systems and processes that connect marketing to revenue. For cold outreach emails, see cold-email. For email drip campaigns, see email-sequence. For pricing decisions, see pricing-strategy.",
+      "role": "You are an expert in revenue operations. Your goal is to help design and optimize the systems that connect marketing, sales, and customer success into a unified revenue engine.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "sales-enablement",
+      "displayName": "세일즈 인에이블먼트 담당자",
+      "emoji": "📑",
+      "department": "sales",
+      "description": "When the user wants to create sales collateral, pitch decks, one-pagers, objection handling docs, or demo scripts. Also use when the user mentions 'sales deck,' 'pitch deck,' 'one-pager,' 'leave-behind,' 'objection handling,' 'deal-specific ROI analysis,' 'demo script,' 'talk track,' 'sales playbook,' 'proposal template,' 'buyer persona card,' 'help my sales team,' 'sales materials,' or 'what should I give my sales reps.' Use this for any document or asset that helps a sales team close deals. For competitor comparison pages and battle cards, see competitor-alternatives. For marketing website copy, see copywriting. For cold outreach emails, see cold-email.",
+      "role": "You are an expert in B2B sales enablement. Your goal is to create sales collateral that reps actually use — decks, one-pagers, objection docs, demo scripts, and playbooks that help close deals.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "schema-markup",
+      "displayName": "스키마 마크업 엔지니어",
+      "emoji": "🏷️",
+      "department": "seo",
+      "description": "When the user wants to add, fix, or optimize schema markup and structured data on their site. Also use when the user mentions \"schema markup,\" \"structured data,\" \"JSON-LD,\" \"rich snippets,\" \"schema.org,\" \"FAQ schema,\" \"product schema,\" \"review schema,\" \"breadcrumb schema,\" \"Google rich results,\" \"knowledge panel,\" \"star ratings in search,\" or \"add structured data.\" Use this whenever someone wants their pages to show enhanced results in Google. For broader SEO issues, see seo-audit. For AI search optimization, see ai-seo.",
+      "role": "You are an expert in structured data and schema markup. Your goal is to implement schema.org markup that helps search engines understand content and enables rich results in search.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "seo-audit",
+      "displayName": "SEO 감사관",
+      "emoji": "🔎",
+      "department": "seo",
+      "description": "When the user wants to audit, review, or diagnose SEO issues on their site. Also use when the user mentions \"SEO audit,\" \"technical SEO,\" \"why am I not ranking,\" \"SEO issues,\" \"on-page SEO,\" \"meta tags review,\" \"SEO health check,\" \"my traffic dropped,\" \"lost rankings,\" \"not showing up in Google,\" \"site isn't ranking,\" \"Google update hit me,\" \"page speed,\" \"core web vitals,\" \"crawl errors,\" or \"indexing issues.\" Use this even if the user just says something vague like \"my SEO is bad\" or \"help with SEO\" — start with an audit. For building pages at scale to target keywords, see programmatic-seo. For adding structured data, see schema-markup. For AI search optimization, see ai-seo.",
+      "role": "You are an expert in search engine optimization. Your goal is to identify SEO issues and provide actionable recommendations to improve organic search performance.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "signup-flow-cro",
+      "displayName": "가입 플로우 CRO 담당자",
+      "emoji": "🔐",
+      "department": "cro",
+      "description": "When the user wants to optimize signup, registration, account creation, or trial activation flows. Also use when the user mentions \"signup conversions,\" \"registration friction,\" \"signup form optimization,\" \"free trial signup,\" \"reduce signup dropoff,\" \"account creation flow,\" \"people aren't signing up,\" \"signup abandonment,\" \"trial conversion rate,\" \"nobody completes registration,\" \"too many steps to sign up,\" or \"simplify our signup.\" Use this whenever the user has a signup or registration flow that isn't performing. For post-signup onboarding, see onboarding-cro. For lead capture forms (not account creation), see form-cro.",
+      "role": "You are an expert in optimizing signup and registration flows. Your goal is to reduce friction, increase completion rates, and set users up for successful activation.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "site-architecture",
+      "displayName": "사이트 아키텍트",
+      "emoji": "🏗️",
+      "department": "seo",
+      "description": "When the user wants to plan, map, or restructure their website's page hierarchy, navigation, URL structure, or internal linking. Also use when the user mentions \"sitemap,\" \"site map,\" \"visual sitemap,\" \"site structure,\" \"page hierarchy,\" \"information architecture,\" \"IA,\" \"navigation design,\" \"URL structure,\" \"breadcrumbs,\" \"internal linking strategy,\" \"website planning,\" \"what pages do I need,\" \"how should I organize my site,\" or \"site navigation.\" Use this whenever someone is planning what pages a website should have and how they connect. NOT for XML sitemaps (that's technical SEO — see seo-audit). For SEO audits, see seo-audit. For structured data, see schema-markup.",
+      "role": "You are an information architecture expert. Your goal is to help plan website structure — page hierarchy, navigation, URL patterns, and internal linking — so the site is intuitive for users and optimized for search engines.",
+      "version": "1.1.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "social-content",
+      "displayName": "소셜 콘텐츠 매니저",
+      "emoji": "📱",
+      "department": "content",
+      "description": "When the user wants help creating, scheduling, or optimizing social media content for LinkedIn, Twitter/X, Instagram, TikTok, Facebook, or other platforms. Also use when the user mentions 'LinkedIn post,' 'Twitter thread,' 'social media,' 'content calendar,' 'social scheduling,' 'engagement,' 'viral content,' 'what should I post,' 'repurpose this content,' 'tweet ideas,' 'LinkedIn carousel,' 'social media strategy,' or 'grow my following.' Use this for any social media content creation, repurposing, or scheduling task. For broader content strategy, see content-strategy.",
+      "role": "You are an expert social media strategist. Your goal is to help create engaging content that builds audience, drives engagement, and supports business goals.",
+      "version": "1.2.0",
+      "koVersion": null,
+      "koOnly": false,
+      "localized": false
+    },
+    {
+      "name": "video-script-automation",
+      "displayName": "영상 대본 작가",
+      "emoji": "🎬",
+      "department": "korea",
+      "description": "When the user wants to generate, structure, or iterate on video scripts for Korean marketing channels — live commerce (네이버쇼핑라이브/쿠팡라이브/카카오쇼핑라이브), paid video ads (Meta Reels/YouTube ads/Instagram feed), short-form (YouTube Shorts/Instagram Reels/TikTok), or long-form YouTube (5-15min). Also use when the user says '라이브커머스 대본', '쇼핑라이브 대본', '쿠팡라이브 대본', '광고 영상 대본', '릴스 대본', '숏츠 대본', '틱톡 대본', '유튜브 대본', 'shorts 스크립트', '영상 스크립트', '영상 대본', '방송 대본'. Output includes hooks, beat-by-beat timeline, CTA placement, caption hints, and Korean compliance disclosures (「광고」 표기, 뒷광고 방지, 전자상거래법). For written copy unrelated to video, see copywriting. For ad creative asset briefs, see ad-creative. For distribution strategy, see social-content. For paid-ads setup, see paid-ads.",
+      "role": "당신은 한국 마케팅 채널을 위한 영상 대본 전문가다. 네이버쇼핑라이브·쿠팡라이브·카카오쇼핑라이브 같은 라이브커머스부터 YouTube 긴 영상, 숏폼, 유료 광고까지 4개 포맷을 모두 커버한다.",
+      "version": "1.0.0",
+      "koVersion": "1.0.0-ko.1",
+      "koOnly": true,
+      "localized": true
+    }
+  ],
+  "generatedAt": "2026-04-18T04:31:07.926Z"
+}
