@@ -124,7 +124,14 @@ function renderOffice() {
 
 function matchesQuery(skill, q) {
   if (!q) return true;
-  const hay = [skill.name, skill.displayName, skill.description, skill.role].join(' ').toLowerCase();
+  const dept = state.data.departments[skill.department];
+  const hay = [
+    skill.name,
+    skill.displayName,
+    skill.description,
+    skill.role,
+    dept?.label || '',
+  ].join(' ').toLowerCase();
   return hay.includes(q);
 }
 
@@ -133,15 +140,25 @@ function renderDesk(skill, dept) {
   desk.className = 'desk';
   desk.style.setProperty('--dept-color', dept.color);
   desk.dataset.name = skill.name;
+  desk.setAttribute('role', 'button');
+  desk.setAttribute('tabindex', '0');
+  desk.setAttribute('aria-label', `${skill.displayName} 상세 보기`);
   desk.innerHTML = `
-    ${skill.localized ? '<div class="desk__ko">KO</div>' : ''}
-    <div class="desk__monitor"></div>
-    <div class="desk__avatar">${skill.emoji}</div>
+    ${skill.localized ? '<div class="desk__ko" aria-label="한국어판">KO</div>' : ''}
+    <div class="desk__monitor" aria-hidden="true"></div>
+    <div class="desk__avatar" aria-hidden="true">${skill.emoji}</div>
     <div class="desk__name">${skill.displayName}</div>
     <div class="desk__id">${skill.name}</div>
     <div class="desk__status">대기 중</div>
   `;
-  desk.addEventListener('click', () => openModal(skill, dept));
+  const open = () => openModal(skill, dept);
+  desk.addEventListener('click', open);
+  desk.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open();
+    }
+  });
   return desk;
 }
 
@@ -226,8 +243,18 @@ els.btnCopy.addEventListener('click', async () => {
 });
 
 // ---------- Events ----------
+// Modal closes when: (a) user clicks an element marked with data-close (the ✕
+// button or the backdrop), or (b) user clicks outside the card area. Checking
+// `closest('.modal__card')` alone would prevent the ✕ button (inside the card)
+// from closing, so we combine the two signals.
 els.modal.addEventListener('click', (e) => {
-  if (e.target.dataset.close !== undefined) closeModal();
+  if (e.target.closest('[data-close]')) {
+    closeModal();
+    return;
+  }
+  if (!e.target.closest('.modal__card')) {
+    closeModal();
+  }
 });
 
 document.addEventListener('keydown', (e) => {
