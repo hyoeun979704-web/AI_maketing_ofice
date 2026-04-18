@@ -5,6 +5,11 @@
 //   ANTHROPIC_API_KEY    (optional) real Claude execution; otherwise simulation
 //   ANTHROPIC_MODEL      default claude-haiku-4-5
 //   PORT                 default 8787
+//
+// Variables can be set inline, exported in the shell, or written to a
+// `.env` file at the repo root (auto-loaded by env.mjs below).
+
+import './env.mjs';
 
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';

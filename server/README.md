@@ -18,10 +18,25 @@ node server/server.mjs
 | `ANTHROPIC_MODEL` | `claude-haiku-4-5` | 사용할 모델 |
 | `PORT` | `8787` | 서버 포트 |
 
+세 가지 전달 방법:
+
 ```bash
+# 1) 인라인 (권장 — shell 히스토리에 키가 안 남음)
 ANTHROPIC_API_KEY=sk-ant-... node server/server.mjs
-# 사이드바 상단 pill이 "● LIVE — Claude API"로 변함
+
+# 2) shell 세션 export
+export ANTHROPIC_API_KEY=sk-ant-...
+node server/server.mjs
+
+# 3) .env 파일 (저장소 루트)
+echo "ANTHROPIC_API_KEY=sk-ant-..." > .env
+node server/server.mjs    # env.mjs가 .env를 자동 로드
 ```
+
+`.env`는 `.gitignore`에 등록되어 있어 커밋되지 않습니다.
+
+성공 시 서버 로그가 `API key: present — real Claude execution`로 표시되고,
+브라우저 사이드바 상단 pill이 "● LIVE — Claude API"로 바뀝니다.
 
 API 키가 없을 때는 미리 정의된 템플릿(`server/agent.mjs:TEMPLATES`)을 기반으로 한 그럴듯한 한국어 출력을 생성. UI 데모와 승인 플로우 검증에는 충분.
 
