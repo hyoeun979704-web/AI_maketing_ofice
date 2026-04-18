@@ -140,3 +140,67 @@ window.addEventListener('resize', () => {
     showBubble(name, text, variant);
   }
 });
+
+// ---------- Liveness driver ----------
+// Makes idle agents feel alive: random blinks, occasional glances, some
+// agents gently sway. Only affects agents in `idle` state so we don't
+// interfere with working/awaiting animations. Runs forever at small
+// intervals; CPU impact negligible (tens of element-class toggles / sec).
+
+const IDLE_THOUGHTS = [
+  '☕ 커피 한 잔',
+  '🤔 음... 어떻게 할까',
+  '📚 자료 찾는 중',
+  '💡 아이디어 떠올랐어!',
+  '🧘 잠깐 스트레칭',
+  '📨 알림 확인',
+  '📊 지표 보는 중',
+  '😊',
+  '👀',
+];
+
+export function startLiveness() {
+  // Random blink — one agent per tick
+  setInterval(() => {
+    const all = [...agentNodes.values()].filter((el) => el.classList.contains('idle'));
+    if (all.length === 0) return;
+    const pick = all[Math.floor(Math.random() * all.length)];
+    pick.classList.add('blink');
+    setTimeout(() => pick.classList.remove('blink'), 220);
+  }, 900);
+
+  // Random glance left/right on a different cadence
+  setInterval(() => {
+    const all = [...agentNodes.values()].filter((el) => el.classList.contains('idle'));
+    if (all.length === 0) return;
+    const pick = all[Math.floor(Math.random() * all.length)];
+    const dir = Math.random() < 0.5 ? 'glance-left' : 'glance-right';
+    pick.classList.add(dir);
+    setTimeout(() => pick.classList.remove(dir), 700 + Math.random() * 600);
+  }, 2000);
+
+  // Occasional gentle sway (couple agents at a time, toggles every ~8s)
+  setInterval(() => {
+    // Remove old sway
+    for (const el of agentNodes.values()) el.classList.remove('sway');
+    // Pick 2-3 idle agents to sway for a while
+    const all = [...agentNodes.values()].filter((el) => el.classList.contains('idle'));
+    const k = Math.min(3, all.length);
+    for (let i = 0; i < k; i++) {
+      const pick = all[Math.floor(Math.random() * all.length)];
+      pick.classList.add('sway');
+    }
+  }, 8000);
+
+  // Idle thought bubbles — rare, only when the agent is idle and silent
+  setInterval(() => {
+    const all = [...agentNodes.entries()].filter(([name, el]) =>
+      el.classList.contains('idle') && !bubbleNodes.has(name));
+    if (all.length === 0) return;
+    const [name] = all[Math.floor(Math.random() * all.length)];
+    const thought = IDLE_THOUGHTS[Math.floor(Math.random() * IDLE_THOUGHTS.length)];
+    showBubble(name, thought, 'idle-thought');
+    // Auto-hide after 3.5s
+    setTimeout(() => hideBubble(name), 3500);
+  }, 6000);
+}

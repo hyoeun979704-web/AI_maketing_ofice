@@ -424,7 +424,40 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
   z-index: 5;
 }
 
-/* States */
+/* ---- States ---- */
+
+/* Every agent breathes; subtle on idle, stronger on working. */
+.agent__body {
+  animation: breathe 3.4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50%      { transform: scale(1.03, 0.97); }
+}
+
+/* Occasional blink — triggered by JS class toggle, not CSS timer,
+   so the 38 agents don't blink in sync. */
+.agent.blink .agent__face {
+  animation: blink 0.2s ease-in-out;
+}
+@keyframes blink {
+  0%, 100% { transform: translateY(2px) scaleY(1); }
+  50%      { transform: translateY(2px) scaleY(0.15); }
+}
+
+/* Random look-around — JS toggles .glance-left / .glance-right briefly */
+.agent.glance-left .agent__face  { transform: translate(-3px, 2px); transition: transform 0.4s; }
+.agent.glance-right .agent__face { transform: translate(3px, 2px);  transition: transform 0.4s; }
+
+/* Idle: slight pendulum sway every ~6s for some agents (JS picks class) */
+.agent.sway .agent__body { animation: sway 2s ease-in-out infinite; }
+@keyframes sway {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  50%      { transform: scale(1.02, 0.98) rotate(2deg); }
+}
+
+/* Working: stronger wobble + typing dots + spinning gear */
 .agent.working .agent__body { animation: wobble 0.55s infinite alternate ease-in-out; }
 .agent.working::after {
   content: '⚙️';
@@ -434,6 +467,48 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
   font-size: 14px;
   animation: spin 1.3s linear infinite;
 }
+.agent.working::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #4c8bf5;
+  animation: typing-dots 1.1s infinite;
+  box-shadow: -10px 0 0 #4c8bf5, 10px 0 0 #4c8bf5;
+}
+@keyframes typing-dots {
+  0%, 60%, 100% { opacity: 0.25; }
+  30%           { opacity: 1; }
+}
+
+/* Meeting: two agents gather — gentle halo + 💬 floating */
+.agent.meeting .agent__body {
+  box-shadow:
+    0 0 0 3px rgba(168, 85, 247, 0.55),
+    0 4px 0 #2a2a3a,
+    0 0 16px rgba(168, 85, 247, 0.35);
+  animation: meeting-glow 1.6s ease-in-out infinite;
+}
+.agent.meeting::after {
+  content: '💬';
+  position: absolute;
+  top: -22px;
+  right: -8px;
+  font-size: 15px;
+  animation: bob 1.4s ease-in-out infinite;
+}
+@keyframes meeting-glow {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.55), 0 4px 0 #2a2a3a, 0 0 16px rgba(168, 85, 247, 0.35); }
+  50%      { box-shadow: 0 0 0 6px rgba(168, 85, 247, 0.28), 0 4px 0 #2a2a3a, 0 0 26px rgba(168, 85, 247, 0.55); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+/* Awaiting approval: strong amber pulse + warning shake */
 .agent.awaiting .agent__body {
   box-shadow:
     0 0 0 3px var(--warn),
@@ -458,12 +533,12 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
 @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50%      { transform: scale(1.05); }
 }
 @keyframes shake {
   0%, 100% { transform: translateX(-50%) rotate(0); }
-  25% { transform: translateX(-50%) rotate(-10deg); }
-  75% { transform: translateX(-50%) rotate(10deg); }
+  25%      { transform: translateX(-50%) rotate(-10deg); }
+  75%      { transform: translateX(-50%) rotate(10deg); }
 }
 
 /* Nameplate */
@@ -586,6 +661,64 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; }
   overflow-y: auto;
   box-shadow: 0 8px 0 #2a2a3a, 0 12px 30px rgba(0,0,0,0.3);
 }
+.modal__card--wide { max-width: 760px; }
+.modal__badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+
+/* Task history list inside agent modal */
+.task-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px dashed #e0d4bf;
+  border-radius: 8px;
+}
+.task-history .empty { padding: 14px; color: #8a6a40; font-size: 12px; }
+.task-history__item {
+  padding: 10px 12px;
+  border-bottom: 1px dashed #e0d4bf;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.task-history__item:last-child { border-bottom: none; }
+.task-history__item:hover { background: #fff5e6; }
+.task-history__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.task-history__title { font-size: 13px; font-weight: 600; color: #1a1a2e; line-height: 1.35; }
+.task-history__meta { font-size: 10px; color: #8a6a40; white-space: nowrap; }
+.task-history__preview { font-size: 11px; color: #5a5a7a; line-height: 1.4; max-height: 42px; overflow: hidden; position: relative; }
+.task-history__preview::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 16px;
+  background: linear-gradient(180deg, transparent, white);
+}
+.task-history__state { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
+.task-history__state.completed { background: rgba(16, 185, 129, 0.15); color: #059669; }
+.task-history__state.awaiting  { background: rgba(245, 158, 11, 0.15); color: #b45309; }
+.task-history__state.working   { background: rgba(76, 139, 245, 0.15); color: #1e40af; }
+.task-history__state.rejected  { background: rgba(239, 68, 68, 0.15); color: #b91c1c; }
+.task-history__state.failed    { background: rgba(239, 68, 68, 0.15); color: #b91c1c; }
+
+/* Task list items should now be clickable */
+.task-row { cursor: pointer; }
+.task-row:hover { background: rgba(255, 181, 90, 0.08); }
+
+details summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: #8a6a40;
+  padding: 6px 0;
+  user-select: none;
+}
+details[open] summary { margin-bottom: 8px; }
 .modal__close {
   position: absolute;
   top: 12px; right: 12px;

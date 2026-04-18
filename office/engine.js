@@ -1,6 +1,6 @@
 // Frontend engine: wires SSE → DOM. Owns local state mirror of the server.
 
-import { buildRoom, setAgentStatus, showBubble, hideBubble } from './characters.js';
+import { buildRoom, setAgentStatus, showBubble, hideBubble, startLiveness } from './characters.js';
 
 // ---------- State ----------
 const state = {
@@ -47,8 +47,42 @@ async function bootstrap() {
     setAgentStatus(agent, status);
     renderKpis();
   });
+  sse.addEventListener('meeting.started', (ev) => onMeetingStarted(JSON.parse(ev.data)));
+  sse.addEventListener('meeting.ended', (ev) => onMeetingEnded(JSON.parse(ev.data)));
   sse.onerror = () => console.warn('SSE connection error; browser will auto-retry.');
+
+  // Start idle NPC liveness loop
+  startLiveness();
+
+  // Wire desk clicks for agent detail modal
+  wireDeskClicks();
 }
+
+// ---------- Meetings ----------
+function onMeetingStarted({ meeting }) {
+  const { primary, collaborator, topic } = meeting;
+  const primName = state.agentsByName.get(primary)?.displayName || primary;
+  const colabName = state.agentsByName.get(collaborator)?.displayName || collaborator;
+  showBubble(primary, `💬 ${colabName}와(과) 회의 중 — "${truncate(topic, 30)}"`, null);
+  showBubble(collaborator, `💬 ${primName} 지원 중`, null);
+  pushActivityText(`🤝 ${primName} × ${colabName} — 회의 시작: ${topic}`, '🤝');
+  renderActivity();
+}
+function onMeetingEnded({ meeting }) {
+  hideBubble(meeting.primary);
+  hideBubble(meeting.collaborator);
+  const primName = state.agentsByName.get(meeting.primary)?.displayName || meeting.primary;
+  const colabName = state.agentsByName.get(meeting.collaborator)?.displayName || meeting.collaborator;
+  pushActivityText(`🤝 ${primName} × ${colabName} — 회의 종료, 실행으로 전환`, '✅');
+  renderActivity();
+}
+
+function pushActivityText(text, emoji) {
+  state.activity.unshift({ text, emoji: emoji || '', timestamp: Date.now() });
+  if (state.activity.length > 60) state.activity.length = 60;
+}
+
+function truncate(s, n) { return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 
 function applySnapshot(snap) {
   state.tasks.clear();
@@ -129,7 +163,37 @@ function renderAll() {
   renderKpis();
   renderApprovals();
   renderTasks();
+  renderCompleted();
   renderActivity();
+}
+
+function renderCompleted() {
+  const el = document.getElementById('completed-list');
+  const done = [...state.tasks.values()]
+    .filter((t) => t.status === 'completed' || t.status === 'rejected' || t.status === 'failed')
+    .sort((a, b) => (b.finishedAt || 0) - (a.finishedAt || 0))
+    .slice(0, 15);
+  document.getElementById('completed-count').textContent = done.length;
+  if (done.length === 0) {
+    el.innerHTML = '<li class="empty">아직 완료된 업무가 없습니다.</li>';
+    return;
+  }
+  el.innerHTML = '';
+  for (const t of done) {
+    const agent = state.agentsByName.get(t.agent);
+    const row = document.createElement('li');
+    row.className = 'task-row';
+    row.innerHTML = `
+      <span class="task-row__emoji">${agent?.emoji || '🧑‍💼'}</span>
+      <span class="task-row__title">
+        ${escape(t.title)}
+        <span class="task-row__agent">${escape(agent?.displayName || t.agent)}</span>
+      </span>
+      <span class="task-row__state ${t.status}">${renderStatus(t.status)}</span>
+    `;
+    row.addEventListener('click', () => openTaskModal(t));
+    el.appendChild(row);
+  }
 }
 
 function renderKpis() {
@@ -187,8 +251,118 @@ function renderTasks() {
       </span>
       <span class="task-row__state ${t.status === 'awaiting_approval' ? 'awaiting' : t.status}">${renderStatus(t.status)}</span>
     `;
+    row.addEventListener('click', () => openTaskModal(t));
     el.appendChild(row);
   }
+}
+
+// ---------- Desk click → agent detail modal ----------
+function wireDeskClicks() {
+  document.getElementById('room').addEventListener('click', (e) => {
+    const slot = e.target.closest('.desk-slot');
+    if (!slot) return;
+    const name = slot.dataset.name;
+    const agent = state.agentsByName.get(name);
+    if (!agent) return;
+    openAgentModal(agent);
+  });
+  // Keyboard support
+  document.getElementById('room').addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const slot = e.target.closest('.desk-slot');
+    if (!slot) return;
+    e.preventDefault();
+    const agent = state.agentsByName.get(slot.dataset.name);
+    if (agent) openAgentModal(agent);
+  });
+}
+
+// ---------- Agent detail modal ----------
+const agentModal = document.getElementById('agent-modal');
+function openAgentModal(agent) {
+  const history = [...state.tasks.values()]
+    .filter((t) => t.agent === agent.name)
+    .sort((a, b) => (b.finishedAt || b.startedAt || b.createdAt) - (a.finishedAt || a.startedAt || a.createdAt));
+  const status = state.agentStatus.get(agent.name) || 'idle';
+  const statusLabels = { idle: '🟢 대기', working: '🔵 업무 중', awaiting: '🟡 승인 대기', meeting: '💬 회의 중' };
+
+  document.getElementById('agent-modal-avatar').textContent = agent.emoji;
+  document.getElementById('agent-modal-title').textContent = agent.displayName;
+  document.getElementById('agent-modal-sub').textContent = `${agent.name} · v${agent.version}${agent.koVersion ? ' · ko ' + agent.koVersion : ''}`;
+
+  const badges = document.getElementById('agent-modal-badges');
+  badges.innerHTML = '';
+  const deptLabel = state.skills?.departments?.[agent.department]?.label || agent.department;
+  addBadgeTo(badges, deptLabel, 'badge');
+  if (agent.koOnly) addBadgeTo(badges, '한국 전용', 'chip chip--alert');
+  else if (agent.localized) addBadgeTo(badges, 'KO 번역', 'chip');
+
+  document.getElementById('agent-modal-role').textContent = agent.role || '(역할 요약 없음)';
+  document.getElementById('agent-modal-status').textContent = statusLabels[status] || status;
+  document.getElementById('agent-modal-count').textContent = history.length;
+
+  const list = document.getElementById('agent-modal-history');
+  if (history.length === 0) {
+    list.innerHTML = '<li class="empty">아직 수행한 업무가 없습니다.</li>';
+  } else {
+    list.innerHTML = '';
+    for (const t of history.slice(0, 20)) {
+      const item = document.createElement('li');
+      item.className = 'task-history__item';
+      const preview = (t.output || '(아직 결과 없음)').slice(0, 160);
+      item.innerHTML = `
+        <div class="task-history__top">
+          <span class="task-history__title">${escape(t.title)}</span>
+          <span class="task-history__state ${t.status === 'awaiting_approval' ? 'awaiting' : t.status}">${renderStatus(t.status)}</span>
+        </div>
+        <div class="task-history__preview">${escape(preview)}</div>
+        <div class="task-history__meta">${fmtTime(t.finishedAt || t.startedAt || t.createdAt)}${t.mode ? ' · ' + t.mode : ''}</div>
+      `;
+      item.addEventListener('click', () => {
+        closeAgentModal();
+        openTaskModal(t);
+      });
+      list.appendChild(item);
+    }
+  }
+  agentModal.hidden = false;
+}
+function closeAgentModal() { agentModal.hidden = true; }
+agentModal.addEventListener('click', (e) => {
+  if (e.target.closest('[data-close]') || !e.target.closest('.modal__card')) closeAgentModal();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !agentModal.hidden) closeAgentModal(); });
+
+// ---------- Task detail modal (full prompt/response) ----------
+const taskModal = document.getElementById('task-modal');
+function openTaskModal(task) {
+  const agent = state.agentsByName.get(task.agent);
+  document.getElementById('task-modal-avatar').textContent = agent?.emoji || '🧑‍💼';
+  document.getElementById('task-modal-title').textContent = task.title;
+  document.getElementById('task-modal-sub').textContent = `${agent?.displayName || task.agent} · ${renderStatus(task.status)}`;
+  const badges = document.getElementById('task-modal-badges');
+  badges.innerHTML = '';
+  addBadgeTo(badges, task.kind || 'draft', 'badge');
+  if (task.mode === 'api') addBadgeTo(badges, 'Claude API', 'chip chip--alert');
+  else if (task.mode === 'simulation') addBadgeTo(badges, '시뮬레이션', 'chip');
+
+  document.getElementById('task-modal-user-prompt').textContent = task.userPrompt || '(요청 정보 없음)';
+  document.getElementById('task-modal-output').textContent = task.output || '(작업 중이거나 결과 없음)';
+  document.getElementById('task-modal-system-prompt').textContent = task.systemPrompt || '(시스템 프롬프트 정보 없음 — 레거시 태스크거나 아직 시작 전)';
+
+  taskModal.hidden = false;
+}
+function closeTaskModal() { taskModal.hidden = true; }
+taskModal.addEventListener('click', (e) => {
+  if (e.target.closest('[data-close]') || !e.target.closest('.modal__card')) closeTaskModal();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !taskModal.hidden) closeTaskModal(); });
+
+function addBadgeTo(el, text, cls) {
+  const b = document.createElement('span');
+  b.className = cls;
+  b.textContent = text;
+  el.appendChild(b);
 }
 
 function renderActivity() {

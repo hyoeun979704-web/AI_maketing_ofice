@@ -36,6 +36,13 @@
       </section>
 
       <section class="panel">
+        <h2>✅ 완료된 업무 <span class="count" id="completed-count">0</span></h2>
+        <ul class="task-list" id="completed-list">
+          <li class="empty">아직 완료된 업무가 없습니다.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
         <h2>📜 활동 피드</h2>
         <ul class="activity-list" id="activity-list"></ul>
       </section>
@@ -92,6 +99,72 @@
         <button class="btn btn--reject" id="btn-reject">거절</button>
         <button class="btn btn--primary" id="btn-approve">승인하고 진행</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ==================== AGENT DETAIL MODAL ==================== -->
+  <div class="modal" id="agent-modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card modal__card--wide" role="dialog" aria-modal="true" aria-labelledby="agent-modal-title">
+      <button class="modal__close" data-close aria-label="닫기">✕</button>
+      <div class="modal__head">
+        <div class="modal__avatar" id="agent-modal-avatar">🧑‍💼</div>
+        <div>
+          <h2 id="agent-modal-title">—</h2>
+          <p class="modal__sub" id="agent-modal-sub">—</p>
+          <div class="modal__badges" id="agent-modal-badges"></div>
+        </div>
+      </div>
+
+      <section class="modal__block">
+        <h3>역할 (SKILL.md 요약)</h3>
+        <p id="agent-modal-role">—</p>
+      </section>
+
+      <section class="modal__block">
+        <h3>현재 상태</h3>
+        <p id="agent-modal-status">—</p>
+      </section>
+
+      <section class="modal__block">
+        <h3>최근 업무 <span class="count" id="agent-modal-count">0</span></h3>
+        <ul class="task-history" id="agent-modal-history">
+          <li class="empty">아직 수행한 업무가 없습니다.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <!-- ==================== TASK OUTPUT MODAL ==================== -->
+  <div class="modal" id="task-modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card modal__card--wide" role="dialog" aria-modal="true">
+      <button class="modal__close" data-close aria-label="닫기">✕</button>
+      <div class="modal__head">
+        <div class="modal__avatar" id="task-modal-avatar">🧑‍💼</div>
+        <div>
+          <h2 id="task-modal-title">—</h2>
+          <p class="modal__sub" id="task-modal-sub">—</p>
+          <div class="modal__badges" id="task-modal-badges"></div>
+        </div>
+      </div>
+
+      <section class="modal__block">
+        <h3>📥 에이전트가 받은 지시 (user prompt)</h3>
+        <pre id="task-modal-user-prompt">—</pre>
+      </section>
+
+      <section class="modal__block">
+        <h3>📤 에이전트 작업 결과</h3>
+        <pre id="task-modal-output">—</pre>
+      </section>
+
+      <section class="modal__block">
+        <details>
+          <summary>🧠 시스템 프롬프트 (SKILL.md 전문) — 클릭해 펼치기</summary>
+          <pre id="task-modal-system-prompt">—</pre>
+        </details>
+      </section>
     </div>
   </div>
 

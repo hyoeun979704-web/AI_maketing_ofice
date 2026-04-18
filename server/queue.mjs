@@ -100,3 +100,28 @@ export function resolveApproval(id, decision) {
 
 export function getTask(id) { return tasks.get(id); }
 export function getApproval(id) { return approvals.get(id); }
+
+// ---------- Meetings ----------
+// A "meeting" is a short collaboration moment between two agents before
+// the primary starts its task. We don't track long-term state for meetings;
+// they fire a start event, keep both agents visually busy, then fire an
+// end event.
+
+export function startMeeting({ primary, collaborator, topic }) {
+  setAgentStatus(primary, 'meeting');
+  setAgentStatus(collaborator, 'meeting');
+  publish({
+    type: 'meeting.started',
+    meeting: { primary, collaborator, topic, startedAt: Date.now() },
+  });
+}
+
+export function endMeeting({ primary, collaborator }) {
+  // Primary goes to working next; collaborator back to idle.
+  setAgentStatus(primary, 'working');
+  setAgentStatus(collaborator, 'idle');
+  publish({
+    type: 'meeting.ended',
+    meeting: { primary, collaborator, endedAt: Date.now() },
+  });
+}
