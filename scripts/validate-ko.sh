@@ -26,6 +26,9 @@ echo "🇰🇷 Validating Korean localization layer"
 echo "========================================"
 echo ""
 
+# Hangul UTF-8 byte pattern (U+AC00–U+D7A3): lead byte 0xEA-0xED, two trailing bytes 0x80-0xBF.
+HANGUL_RE='[\xea-\xed][\x80-\xbf][\x80-\xbf]'
+
 for skill_dir in "$SKILLS_DIR"/*/; do
     skill_name=$(basename "$skill_dir")
     if [[ -n "$FILTER" && "$skill_name" != "$FILTER" ]]; then
@@ -43,50 +46,48 @@ for skill_dir in "$SKILLS_DIR"/*/; do
         continue
     fi
 
-    # Detect if the skill has been localized. Rule of thumb: body contains Hangul.
-    body=$(awk '/^---$/{c++; next} c>=2' "$skill_file")
-    if ! printf '%s' "$body" | LC_ALL=C grep -qP '[\xea-\xed][\x80-\xbf][\x80-\xbf]'; then
-        # No Hangul detected → skill not yet translated. Skip, don't fail.
+    # Single read: split frontmatter and body, skip untranslated skills early.
+    file_contents=$(cat "$skill_file")
+    frontmatter=$(printf '%s\n' "$file_contents" | sed -n '/^---$/,/^---$/p' | head -n -1 | tail -n +2)
+    body=$(printf '%s\n' "$file_contents" | awk '/^---$/{c++; next} c>=2')
+
+    if ! printf '%s' "$body" | LC_ALL=C grep -qP "$HANGUL_RE"; then
         ((SKIPPED++))
         continue
     fi
 
-    # ===== SKILL.en.md backup =====
-    # Korea-only new skills (no upstream) opt out via `ko-only: true` in metadata.
-    frontmatter=$(sed -n '/^---$/,/^---$/p' "$skill_file" | head -n -1 | tail -n +2)
-    ko_only=$(echo "$frontmatter" | grep -E "^[[:space:]]+ko-only:" | awk '{print $2}' | tr -d '[:space:]')
+    # Korea-only skills (no upstream) opt out of SKILL.en.md backup via `ko-only: true`.
+    ko_only=$(printf '%s\n' "$frontmatter" | grep -E "^[[:space:]]+ko-only:" | awk '{print $2}' | tr -d '[:space:]')
     if [[ "$ko_only" != "true" && ! -f "$en_backup" ]]; then
         errors+=("Missing SKILL.en.md backup (cp SKILL.md SKILL.en.md before translating, or add 'ko-only: true' for Korea-only new skills)")
     fi
 
-    # ===== description bilingual check =====
-    description=$(echo "$frontmatter" | grep "^description:" | head -1)
-    if [[ $description == *'description: "'* ]]; then
-        description=$(echo "$description" | sed 's/^description: "//' | sed 's/"$//')
-    else
-        description=$(echo "$description" | sed 's/^description: //')
-    fi
+    description=$(printf '%s\n' "$frontmatter" | sed -n 's/^description:[[:space:]]*//p' | head -1 | sed 's/^"//; s/"$//')
 
     if [[ -z "$description" ]]; then
         errors+=("Missing description field")
     else
-        # English trigger present?
-        if ! echo "$description" | grep -qiE "when|use|mention"; then
+        if ! printf '%s' "$description" | grep -qiE "when|use|mention"; then
             warnings+=("description lacks English trigger phrases (when/use/mention)")
         fi
-        # Korean trigger present? Require at least one Hangul syllable block.
-        if ! printf '%s' "$description" | LC_ALL=C grep -qP '[\xea-\xed][\x80-\xbf][\x80-\xbf]'; then
+        if ! printf '%s' "$description" | LC_ALL=C grep -qP "$HANGUL_RE"; then
             errors+=("description has no Korean trigger phrases (Hangul expected for bilingual matching)")
         fi
-        # Length check (byte count approximates char limit; spec says 1024 chars)
-        byte_len=$(printf '%s' "$description" | wc -c)
-        if [[ $byte_len -gt 2048 ]]; then
-            warnings+=("description is $byte_len bytes (spec max 1024 chars; Hangul is 3 bytes each, so budget is tight — verify char count)")
+        # Spec limit is 1024 chars. Bilingual content mixes 1-byte ASCII and 3-byte Hangul,
+        # so worst case (all Hangul) = 3072 bytes, best case (all ASCII) = 1024 bytes.
+        # Use awk to get actual char count (not bytes) to enforce the spec exactly.
+        char_len=$(printf '%s' "$description" | LC_ALL=en_US.UTF-8 awk '{print length($0)}')
+        if [[ -z "$char_len" ]]; then
+            char_len=$(printf '%s' "$description" | wc -m)
+        fi
+        if [[ $char_len -gt 1024 ]]; then
+            errors+=("description is $char_len chars (spec max 1024)")
+        elif [[ $char_len -gt 900 ]]; then
+            warnings+=("description is $char_len chars (spec max 1024, getting close)")
         fi
     fi
 
-    # ===== ko-version in metadata =====
-    if ! echo "$frontmatter" | grep -qE "^[[:space:]]+ko-version:"; then
+    if ! printf '%s\n' "$frontmatter" | grep -qE "^[[:space:]]+ko-version:"; then
         warnings+=("metadata missing ko-version field (recommended: ko-version: <upstream>-ko.<n>)")
     fi
 
