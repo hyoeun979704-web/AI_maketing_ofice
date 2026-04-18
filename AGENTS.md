@@ -252,3 +252,28 @@ Recent commits: !`git log --oneline -5 2>/dev/null`
 ```
 
 **Why this is Claude Code-only**: Other agents that load skills will see the literal `` !`command` `` string rather than executing it, which would appear as garbled instructions. Keep cross-agent skill files free of this syntax.
+
+## 한국어 현지화 가이드
+
+This fork ships a Korean localization layer. Full rules, file layout, translation workflow, and the term glossary live in separate canonical docs:
+
+- [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — design principles, file layout, per-skill translation workflow, upstream merge strategy
+- [`docs/glossary.ko.md`](docs/glossary.ko.md) — 200+ term EN→KO glossary (marketing, video, Korea platforms, compliance)
+- [`CONTRIBUTING.ko.md`](CONTRIBUTING.ko.md) — contributor-facing checklist for Korean PRs
+
+Agents editing this repo must read `docs/LOCALIZATION.md` before translating or adding Korea-specific skills. Key invariants in one line each:
+
+- Directory names and `name` fields stay English (spec requires `[a-z0-9-]`).
+- `description` carries both English and Korean trigger phrases under the 1024-char limit.
+- Upstream English is preserved as `SKILL.en.md` backup (skip for `ko-only: true` skills).
+- `metadata.ko-version` uses `<upstream>-ko.<iteration>` format.
+- Code, tests, URLs, frontmatter keys are never translated.
+
+Run both validators before committing:
+
+```bash
+bash validate-skills.sh       # upstream spec
+bash scripts/validate-ko.sh   # Korean layer
+```
+
+Korea-specific compliance (지식iN anti-promotion, 전자상거래법, 뒷광고 prevention, 건강기능식품 regulations, PIPA) is enforced inside the relevant skill bodies (`naver-kin-automation`, `video-script-automation`) rather than here. See those skills' `## 컴플라이언스` sections for authoritative rules.

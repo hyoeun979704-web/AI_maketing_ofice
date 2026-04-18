@@ -2,6 +2,29 @@
 
 Current versions of all skills. Agents can compare against local versions to check for updates.
 
+## Korean Localization Versions (한국어판 버전)
+
+한국어판 이터레이션은 `<upstream>-ko.<iteration>` 형식이다. upstream version이 올라가면 iteration은 `.1`로 리셋된다. 번역되지 않은 스킬은 `—`로 표기한다.
+
+| Skill | Upstream | ko-version | Last Translated |
+|-------|----------|------------|-----------------|
+| product-marketing-context | 1.2.0 | 1.2.0-ko.1 | 2026-04-18 |
+| naver-kin-automation | — (Korea-only, new) | 1.0.0-ko.1 | 2026-04-18 |
+| video-script-automation | — (Korea-only, new) | 1.0.0-ko.1 | 2026-04-18 |
+| (other 35 skills) | 1.2.0 | — | not yet |
+
+한국어판 변경 로그:
+
+### 2026-04-18 (ko initial)
+- 한국어 현지화 레이어 도입: `docs/LOCALIZATION.md`, `docs/glossary.ko.md`, `scripts/validate-ko.sh`
+- `README.ko.md`, `CONTRIBUTING.ko.md` 작성
+- `AGENTS.md`에 "한국어 현지화 가이드" 섹션 추가
+- `product-marketing-context` 스킬 한국어 번역 (기반 스킬)
+- 한국 특화 신규 스킬 2종 추가: `naver-kin-automation`, `video-script-automation`
+
+---
+
+
 | Skill | Version | Last Updated |
 |-------|---------|--------------|
 | ab-test-setup | 1.2.0 | 2026-03-14 |

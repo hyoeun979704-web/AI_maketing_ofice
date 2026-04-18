@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Marketing Office — 타이쿤 대시보드</title>
+  <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><text y="52" font-size="52">🏢</text></svg>' />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__left">
+      <h1 class="logo">🏢 AI Marketing Office</h1>
+      <span class="tagline">38명의 AI 에이전트 직원을 관리하세요</span>
+    </div>
+    <div class="topbar__right">
+      <div class="stat">
+        <span class="stat__label">전체 직원</span>
+        <span class="stat__value" id="stat-total">—</span>
+      </div>
+      <div class="stat">
+        <span class="stat__label">한국어판</span>
+        <span class="stat__value" id="stat-ko">—</span>
+      </div>
+      <div class="stat">
+        <span class="stat__label">부서</span>
+        <span class="stat__value" id="stat-dept">—</span>
+      </div>
+      <div class="stat">
+        <span class="stat__label">오늘 날짜</span>
+        <span class="stat__value" id="stat-date">—</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="controls">
+    <input type="search" id="search" class="search" placeholder="직원 이름·업무 검색 (예: 전환율, SEO, 대본)" />
+    <div class="filter-bar" id="filter-bar"></div>
+  </section>
+
+  <main class="office" id="office"></main>
+
+  <footer class="footer">
+    <span>📍 본사: <code>skills/*/SKILL.md</code></span>
+    <span>·</span>
+    <span>🔄 데이터 갱신: <code>node dashboard/build-data.mjs</code></span>
+    <span>·</span>
+    <span>💡 직원 책상을 클릭하면 업무 지시 프롬프트를 복사할 수 있습니다</span>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal__close" data-close aria-label="닫기">✕</button>
+      <div class="modal__header">
+        <div class="modal__avatar" id="modal-avatar">🧑‍💼</div>
+        <div>
+          <h2 id="modal-title">—</h2>
+          <p class="modal__subtitle" id="modal-subtitle">—</p>
+          <div class="modal__badges" id="modal-badges"></div>
+        </div>
+      </div>
+
+      <section class="modal__section">
+        <h3>📋 어떤 일을 하는가</h3>
+        <p id="modal-role">—</p>
+      </section>
+
+      <section class="modal__section">
+        <h3>🎯 언제 호출되는가 (description)</h3>
+        <p id="modal-description" class="modal__description">—</p>
+      </section>
+
+      <section class="modal__section">
+        <h3>💬 업무 지시 템플릿</h3>
+        <p class="modal__hint">아래 버튼을 눌러 복사한 뒤 Claude Code에 붙여넣으세요. 이 직원이 자동 호출됩니다.</p>
+        <pre id="modal-prompt"></pre>
+        <button class="btn btn--primary" id="btn-copy">📋 프롬프트 복사</button>
+        <span class="copy-status" id="copy-status"></span>
+      </section>
+
+      <section class="modal__section">
+        <h3>📂 원본 파일</h3>
+        <ul class="filelist" id="modal-files"></ul>
+      </section>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
